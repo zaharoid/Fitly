@@ -43,7 +43,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/i18n',
     '@nuxtjs/google-fonts',
     '@vee-validate/nuxt',
     'nuxt-module-hotjar',

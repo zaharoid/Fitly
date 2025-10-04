@@ -1,9 +1,8 @@
 import * as Yup from 'yup';
 import type { OptionSelect, OptionRadio } from './Option';
-import { Image } from './Image';
 import type * as DateTypes from '~t/DateRange';
-import type { ResFile } from '~t/responces/files.dto';
-import type { RuleValid } from '~t/RuleValid';
+import type { Image } from '../Image';
+import type { RuleValid } from './RuleValid';
 
 interface PropFuncBtn {
   text?: string;
@@ -111,7 +110,6 @@ export type TelField = AbstractField & {
 
 export type FileAutouploadField = AbstractField & {
   fieldMode: 'fileAutoupload';
-  preset?: ResFile[];
   textFormat?: string;
   textDescription?: string,
 }
