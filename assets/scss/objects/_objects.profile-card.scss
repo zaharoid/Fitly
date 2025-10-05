@@ -1,0 +1,89 @@
+.o-profile-card {
+  $self: &;
+
+  @apply t-rounded-lg;
+  border: 1px solid theme('colors.secondaryBackground');
+  transition: background .2s ease;
+
+  &__bottom {
+    @apply t-text-xs;
+    background-color: theme('colors.background');
+    border-top: 1px solid theme('colors.white');
+    color: theme('colors.secondaryText');
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 12px;
+    padding: theme('spacing.2');
+    text-transform: uppercase;
+    transition: background .2s ease;
+  }
+
+  &__action {
+    opacity: 0;
+    transition: opacity .2s ease;
+
+    &--visible-always {
+      opacity: 1;
+    }
+  }
+
+  &:hover {
+
+    #{$self}__action {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin profile-state-styles($card_selector) {
+
+  label:hover #{$card_selector} {
+    background-color: theme('colors.background');
+  }
+
+  input:checked + label #{$card_selector} {
+    background-color: theme('colors.secondaryBackground');
+
+    &__bottom {
+      background-color: theme('colors.secondaryBackground');
+    }
+  }
+
+  input:focus-visible + label #{$card_selector} {
+    @include focus-style;
+  }
+
+  input:disabled + label #{$card_selector} {
+    opacity: .5;
+  }
+
+  input:disabled + label:hover #{$card_selector} {
+    background-color: transparent;
+  }
+
+  input:disabled:checked + label #{$card_selector} {
+    background-color: theme('colors.secondaryBackground');
+  }
+}
+
+@include profile-state-styles('.o-profile-card');
+
+// @include profile-state-styles('.o-profile-card-item .o-profile-card');
+
+.o-profile-switch-trigger {
+  $self: &;
+  display: block;
+  position: relative;
+
+  &__input {
+    height: 0;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    width: 0;
+  }
+
+  &__label:not(#{$self}__input:disabled + #{$self}__label) {
+    cursor: pointer;
+  }
+}

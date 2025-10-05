@@ -1,0 +1,21 @@
+.o-text-separate {
+  align-items: center;
+  color: theme('colors.secondaryText');
+  display: flex;
+  text-align: center;
+
+  &:before,
+  &:after {
+    background-color: theme('colors.secondaryStroke');
+    content: '';
+    flex-basis: auto;
+    flex-grow: 1;
+    height: 1px;
+  }
+
+  &__inner {
+    margin-left: theme('spacing.4');
+    margin-right: theme('spacing.4');
+    max-width: 300px;
+  }
+}

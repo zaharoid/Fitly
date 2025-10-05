@@ -1,0 +1,21 @@
+/**
+ * CONTENTS
+ *
+ * SETTINGS
+ * Config...............Project-level configuration and feature switches.
+ * Core.................inuitcss’ core and setup settings.
+ * Global...............Project-wide variables and settings.
+ *
+ * TOOLS
+ * Font-size............A mixin which guarantees baseline-friendly line-heights.
+ * Clearfix.............Micro clearfix mixin.
+ * Hidden...............Mixin for hiding elements.
+ * Sass MQ..............inuitcss’ default media query manager.
+ */
+
+//  @import '../../public/icomoon/variables';
+
+// TOOLS
+@import 'tools/tools.fonts';
+@import 'tools/tools.mixins';
+@import 'tools/tools.scrollbar';

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { MaskInputOptions } from 'maska';
 import useVFormCommon from './useVFormCommon';
 import commonProps from './commonProps';
-import { BtnViewMode } from 'types/Btn';
+import type { BtnViewMode } from '~/types/Btn';
+import type { MaskInputOptions } from 'maska';
 
 interface PropFuncBtn {
   text?: string,
   icon?: string,
-  action: Function | { [key: string]: Function },
+  action: ((...args: unknown[]) => unknown) | { [key: string]: (...args: unknown[]) => unknown },
 }
 
 interface PropUnit {
@@ -56,7 +56,7 @@ const props = defineProps({
       icon?: string,
       mode?: BtnViewMode,
       disabled?: boolean,
-      action: (event: Event) => any,
+      action: (event: Event) => unknown,
     }>,
     default: null,
   },
@@ -71,10 +71,8 @@ const props = defineProps({
 });
 
 type Emit = {
-  (e: 'update:modelValue', val: string): void
-  (e: 'onBlur', val: string): void
-  (e: 'touched', val: boolean): void
-  (e: 'isError', val: boolean): void
+  (e: 'update:modelValue' | 'onBlur', val: string): void
+  (e: 'touched' | 'isError', val: boolean): void
 }
 const emit = defineEmits<Emit>();
 
@@ -104,7 +102,7 @@ const localFuncBtn = computed(() => {
 
 const overTextLimit = computed(() => inputValue.value?.length > props.maxlength);
 
-const attrsMain = computed((): { [key: string]: any } => {
+const attrsMain = computed((): { [key: string]: unknown } => {
   return {
     id: finalId.value,
     class: {

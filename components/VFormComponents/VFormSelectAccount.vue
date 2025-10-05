@@ -72,7 +72,6 @@ defineEmits(['update:modelValue', 'touched']);
     @screen 2xl {
       max-width: 45%;
     }
-
   }
 }
 </style>

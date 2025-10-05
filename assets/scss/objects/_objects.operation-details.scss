@@ -1,0 +1,59 @@
+@layer components {
+
+  .o-details-structure {
+    $self: &;
+    display: grid;
+    grid-gap: theme('spacing.6');
+    grid-template-columns: 1fr;
+    min-height: 300px;
+    position: relative;
+
+    @screen lg {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__box {
+      display: flex;
+      flex-direction: column;
+      grid-column: 1 / -1;
+
+      &--overflow-hidden {
+        overflow: hidden;
+      }
+
+      &--view-half {
+        grid-column: auto;
+      }
+    }
+
+    &__control-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: theme('spacing.4');
+      grid-column: 1 / -1;
+      justify-content: space-between;
+    }
+  }
+}
+
+.o-form-box {
+  $self: &;
+  position: relative;
+
+  &--boxed {
+    background-color: theme('colors.cards');
+    border-radius: .5rem;
+
+    #{$self}__group {
+      padding: theme('spacing.6');
+    }
+
+    #{$self}__group--pb-0 {
+      padding-bottom: 0;
+    }
+
+    #{$self}__group:not(:first-child) {
+      border-top: 1px solid theme('colors.devider');
+    }
+  }
+}

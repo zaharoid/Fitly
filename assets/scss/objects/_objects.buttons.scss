@@ -1,0 +1,217 @@
+@use 'sass:map';
+@use 'sass:list';
+
+.o-btn {
+  $self: &;
+
+  @apply t-text-base t-normal-case;
+  align-items: center;
+  border-radius: .5rem;
+  border-style: solid;
+  border-width: 1px;
+  display: inline-flex;
+  font-weight: 700;
+  justify-content: center;
+  min-width: 38px;
+  padding: theme('spacing.2') theme('spacing.4');
+  text-align: center;
+  text-decoration: none;
+  transition-duration: .2s;
+  transition-property: background-color, border, color, padding;
+  transition-timing-function: ease;
+
+  $replace_props: (
+    border-color: 'background-color',
+  );
+  $available_props: background-color, border-color, border-radius, color, padding;
+
+  &__icon + span:not(:empty) {
+    margin-left: theme('spacing.2');
+  }
+
+  &--i-right {
+    flex-direction: row-reverse;
+
+    #{$self}__icon + span:not(:empty) {
+      margin-left: 0;
+      margin-right: theme('spacing.2');;
+    }
+  }
+
+  @mixin set-all-props($_variables_or_modes, $_first_level: true) {
+    @each $_prop, $_val in $_variables_or_modes {
+      @if list.index($available_props, $_prop) {
+        #{$_prop}: #{$_val};
+      } @else {
+        &#{$_prop} {
+          @include set_all_props($_val, false);
+        }
+      }
+    }
+
+    @if not $_first_level {
+      @each $_prop, $_replace_prop in $replace_props {
+        @if not map.has-key($_variables_or_modes, $_prop) {
+          #{$_prop}: map.get($_variables_or_modes, $_replace_prop);
+        }
+      }
+    }
+  }
+
+  $btns_modes: (
+    null: (
+      background-color: theme('colors.accent'),
+      color: theme('colors.invertText'),
+      ':hover': (
+        background-color: theme('colors.accentHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.accentPressed'),
+      ),
+      ':disabled': (
+        background-color: theme('colors.inactive'),
+      ),
+    ),
+    '--secondary': (
+      background-color: theme('colors.cards'),
+      border-color: theme('colors.inactive'),
+      color: theme('colors.text'),
+      ':hover': (
+        background-color: theme('colors.cards'),
+        border-color: theme('colors.accentHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.background'),
+        border-color: theme('colors.accentPressed'),
+      ),
+      ':disabled': (
+        background-color: theme('colors.cards'),
+        border-color: theme('colors.inactive'),
+        color: theme('colors.inactive'),
+      ),
+    ),
+    '--critical-primary': (
+      background-color: theme('colors.critical'),
+      color: theme('colors.invertText'),
+      ':hover': (
+        background-color: theme('colors.criticalHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.criticalPressed'),
+      ),
+      ':disabled': (
+        background-color: theme('colors.inactive'),
+      ),
+    ),
+    '--critical-secondary': (
+      background-color: theme('colors.cards'),
+      border-color: theme('colors.critical'),
+      color: theme('colors.critical'),
+      ':hover': (
+        background-color: theme('colors.cards'),
+        border-color: theme('colors.criticalHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.background'),
+        border-color: theme('colors.criticalPressed'),
+      ),
+      ':disabled': (
+        background-color: theme('colors.cards'),
+        border-color: theme('colors.inactive'),
+        color: theme('colors.inactive'),
+      ),
+    ),
+    '--ghost-primary': (
+      background-color: transparent,
+      border-radius: .25rem,
+      color: theme('colors.accent'),
+      padding: 1px 5px,
+      ':hover': (
+        background-color: transparent,
+        color: theme('colors.accentHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.background'),
+        color: theme('colors.accentPressed'),
+      ),
+      ':disabled': (
+        background-color: transparent,
+        color: theme('colors.inactive'),
+      ),
+    ),
+    '--ghost-critical': (
+      background-color: transparent,
+      border-radius: .25rem,
+      color: theme('colors.critical'),
+      padding: 1px 5px,
+      ':hover': (
+        background-color: transparent,
+        color: theme('colors.criticalHover'),
+      ),
+      ':active': (
+        background-color: theme('colors.background'),
+        color: theme('colors.criticalPressed'),
+      ),
+      ':disabled': (
+        background-color: transparent,
+        color: theme('colors.inactive'),
+      ),
+    ),
+    '--ghost-secondary': (
+      background-color: transparent,
+      border-radius: .25rem,
+      color: theme('colors.secondaryText'),
+      padding: 1px 5px,
+      ':hover': (
+        background-color: transparent,
+        color: theme('colors.text'),
+      ),
+      ':active': (
+        background-color: theme('colors.background'),
+        color: theme('colors.text'),
+      ),
+      ':disabled': (
+        background-color: transparent,
+        color: theme('colors.inactive'),
+      ),
+    ),
+  );
+
+  @include set-all-props($btns_modes);
+}
+
+
+
+.o-iconed-btn {
+  align-items: center;
+  background-color: #0000;
+  border-radius: theme('spacing.1');
+  border-width: 0;
+  color: theme('colors.secondaryText');
+  display: inline-flex;
+  font-size: 16px;
+  justify-content: center;
+  transition-duration: .2s;
+  transition-property: color, background-color;
+  transition-timing-function: ease;
+
+  &:hover {
+    color: theme('colors.secondaryItems');
+  }
+
+  &:active {
+    background-color: theme('colors.background');
+  }
+
+  &--light {
+    color: theme('colors.white');
+
+    &:hover {
+      color: theme('colors.white');
+    }
+
+    &:active {
+      background-color: #{theme('colors.background')}22;
+    }
+  }
+}

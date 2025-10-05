@@ -25,28 +25,38 @@ module.exports = {
       gt: '1440px',
     },
     colors: {
-      // brand (как на макете)
-      primary: '#CBBCEB',        // светло-сиреневый (хедер/подсветки)
-      primaryHover: '#BFAFE6',   // наведение на светлых элементах
-      primaryPressed: '#A897DF', // тёмнее при нажатии
-      accent: '#6D28D9',         // насыщённая фиолетовая (CTA-кнопки)
-      accentHover: '#5B21B6',
-      accentPressed: '#4C1D95',
+      primary: '#A78BFA',        // Lavender (главный брендовый цвет)
+      primaryHover: '#9B8FFF',   // Hover – чуть темнее
+      primaryPressed: '#7C6EE6', // Pressed – насыщенный фиолетовый
 
-      // semantic
-      success: '#10B981',
-      warning: '#F59E0B',
-      critical: '#EF4444',
-      info: '#3B82F6',
+      accent: '#6D28D9',         // Глубокий фиолетовый для CTA
+      accentHover: '#5B21B6',    // Hover по CTA
+      criticalHover: '#DC2626', // темнее красный для hover
+      criticalPressed: '#B91C1C', // самый тёмный красный для состояния pressed  
+      accentPressed: '#4C1D95',  // Pressed по CTA
+      inactive: '#D1D5DB',       // Неактивные элементы (светло-серый)
 
-      // neutrals
-      background: '#F5F5F5',     // мягкий серый фон страницы
-      surface: '#FFFFFF',        // карточки/холст
-      divider: '#E5E7EB',
-      text: '#111827',           // основной текст (очень тёмно-серый)
-      secondaryText: '#6B7280',  // подписи/метки
+      secondaryItems: '#8B5CF6', // Доп. элементы (иконки, выделения)
+      secondaryStroke: '#E5E7EB',// Бордеры и линии
+      cards: '#FFFFFF',          // Карточки, поверхности
+      secondaryBackground: '#F3F4F6',
+      devider: '#E5E7EB',
+      greyNobel: '#B4B4B4',
+      minorBackground: '#F9FAFB',
 
-      // misc
+      success: '#10B981',        // Зеленый – успех
+      warning: '#F59E0B',        // Желтый – предупреждение
+      critical: '#EF4444',       // Красный – ошибка
+      info: '#3B82F6',           // Синий – информационные сообщения
+
+      background: '#FAF9FF',     // Общий фон (очень светлый лаванда)
+      surface: '#FFFFFF',        // Поверхности (блоки, формы)
+      divider: '#E5E7EB',        // Разделители, линии
+
+      text: '#111827',           // Основной текст (тёмно-серый, почти чёрный)
+      secondaryText: '#6B7280',  // Вторичный текст (светло-серый)
+      invertText: '#FFFFFF',     // Текст на цветных/тёмных фонах (кнопки)
+
       black: '#000000',
       white: '#FFFFFF',
       transparent: '#0000',

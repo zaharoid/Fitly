@@ -1,0 +1,37 @@
+/* ==========================================================================
+   #FONTS
+   ========================================================================== */
+
+// Place all @font-face declarations in here. Example:
+// @font-face {
+//     font-family: 'Colfax-Web';
+//     src: url('/fonts/Colfax-Regular.eot');
+//     src: ...
+//     font-weight: normal;
+// }
+
+
+@include
+  add_font(
+    $name: 'Klarna',
+    $weight: 'normal',
+    $style: 'normal',
+    $links: (
+      'eot': '/fonts/klarna/KlarnaTextMono-Regular',
+      'ttf': '/fonts/klarna/KlarnaTextMono-Regular',
+      'woff': '/fonts/klarna/KlarnaTextMono-Regular',
+      'woff2': '/fonts/klarna/KlarnaTextMono-Regular',
+    )
+  );
+@include
+  add_font(
+    $name: 'Klarna',
+    $weight: 500,
+    $style: 'normal',
+    $links: (
+      'eot': '/fonts/klarna/KlarnaTextMono-Medium',
+      'ttf': '/fonts/klarna/KlarnaTextMono-Medium',
+      'woff': '/fonts/klarna/KlarnaTextMono-Medium',
+      'woff2': '/fonts/klarna/KlarnaTextMono-Medium',
+    )
+  );

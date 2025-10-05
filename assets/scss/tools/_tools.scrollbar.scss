@@ -1,0 +1,32 @@
+@mixin scrollbar($_mode: 'main') {
+  $color_thumb: theme('colors.inactive');
+  $color_track: theme('colors.white');
+  $color_track_active: theme('colors.greyNobel');
+
+  @if $_mode == 'secondary' {
+    $color_thumb: theme('colors.secondaryStroke');
+    $color_track: theme('colors.secondaryBackground');
+    $color_track_active: theme('colors.secondaryItems');
+  }
+
+
+  &::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $color_thumb;
+    border: 2px solid $color_track;
+    border-radius: 1rem;
+
+    &:active {
+      background-color: $color_track_active;
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $color_track;
+    border-radius: 1rem;
+  }
+}

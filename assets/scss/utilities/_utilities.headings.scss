@@ -1,0 +1,40 @@
+.u-heading {
+  font-family: theme('fontFamily.title');
+  font-weight: 600;
+
+  &--1 {
+    @apply t-text-xl;
+
+    @screen md {
+      @apply t-text-3xl;
+    }
+  }
+
+  &--2 {
+    @apply t-text-lg;
+
+    @screen md {
+      @apply t-text-2xl;
+    }
+  }
+
+  &--3 {
+    @apply t-text-ml;
+
+    @screen md {
+      @apply t-text-xl;
+    }
+  }
+
+  &--4 {
+    @apply t-text-ml;
+  }
+
+  &--5 {
+    @apply t-text-sm;
+  }
+
+  &--6 {
+    @apply t-text-xs;
+  }
+}

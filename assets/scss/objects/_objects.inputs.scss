@@ -1,0 +1,51 @@
+.o-input {
+  @apply t-text-base;
+  background-color: theme('colors.cards');
+  border: 1px solid theme('colors.secondaryStroke');
+  border-radius: .25rem;
+  color: theme('colors.text');
+  padding: theme('spacing.2') theme('spacing.4');
+  transition-duration: .2s;
+  transition-property: background-color, border, color;
+  transition-timing-function: ease;
+  width: 100%;
+
+  &:hover {
+    border-color: theme('colors.secondaryItems');
+  }
+
+  @include placeholder-style {
+    color: theme('colors.secondaryText');
+  }
+
+  &--critical,
+  &--critical:hover {
+    border-color: theme('colors.critical');
+  }
+
+  &:disabled,
+  &#{&}--disabled {
+    background-color: theme('colors.background');
+    border-color: theme('colors.inactive');
+  }
+
+
+  &[type='number'] {
+    /* stylelint-disable property-no-vendor-prefix */
+    -moz-appearance: textfield;
+    /* stylelint-enable property-no-vendor-prefix */
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+textarea.o-input {
+  min-height: 80px;
+  resize: none;
+}
+
+
