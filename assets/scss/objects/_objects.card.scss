@@ -1,0 +1,47 @@
+.o-card {
+  background: theme('colors.cards');
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: theme('spacing.4') theme('spacing.4') theme('spacing.8');
+  position: relative;
+
+  &--label {
+
+    &:after {
+      align-items: center;
+      background-color: theme('colors.secondaryStroke');
+      border-radius: 0 0 8px 8px;
+      bottom: 0;
+      color: theme('colors.cards');
+      content: attr(second-label);
+      display: flex;
+      font-size: 10px;
+      font-weight: 700;
+      height: 24px;
+      left: 0;
+      line-height: 16px;
+      padding: 0 theme('spacing.4');
+      position: absolute;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    &-secondaryStroke:after {
+      background-color: theme('colors.secondaryStroke');
+    }
+
+
+    &-secondary:after {
+      background: theme('colors.secondaryStroke');
+    }
+
+    &-inactive:after {
+      background-color: theme('colors.inactive');
+    }
+
+    &-critical:after {
+      background-color: theme('colors.critical');
+    }
+  }
+}

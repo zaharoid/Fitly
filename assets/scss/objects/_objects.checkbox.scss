@@ -1,0 +1,138 @@
+@use 'sass:math';
+
+.o-checkbox {
+  $self: &;
+  $dot_size: 20px;
+  $thickness: 2px;
+  $yPos: 9px;
+  $time_duration: .12s;
+  $time_delay: .08s;
+  cursor: pointer;
+  display: flex;
+
+  input {
+    height: $dot_size;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    width: $dot_size;
+  }
+
+  input + span {
+    display: block;
+    height: $dot_size;
+    min-width: $dot_size;
+    position: relative;
+    width: $dot_size;
+
+    &:before {
+      border: 1px solid theme('colors.secondaryText');
+      border-radius: 4px;
+      content: '';
+      display: block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: border $time_duration ease $time_delay;
+      width: 100%;
+    }
+
+    > span {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: scale(0);
+      transition-duration: $time_duration;
+      transition-property: transform;
+      transition-timing-function: ease;
+
+      &:before,
+      &:after {
+        background-color: theme('colors.white');
+        content: '';
+        height: $thickness;
+        position: absolute;
+        transition-duration: transform, left, top, width;
+        transition-duration: $time_duration;
+        transition-timing-function: ease;
+      }
+
+      &:before {
+        left: 3px;
+        top: $yPos + $thickness;
+        transform: rotate(45deg);
+        width: 7px;
+      }
+
+      &:after {
+        left: 7px;
+        top: $yPos;
+        transform: rotate(-45deg);
+        width: 11px;
+      }
+    }
+  }
+
+  /* stylelint-disable no-descending-specificity */
+
+  &--vague input + span {
+
+    &:before {
+      border: math.div($dot_size, 2) solid theme('colors.accent');
+      transition-delay: 0s;
+    }
+
+    > span {
+      transform: scale(1);
+      transition-delay: $time_delay;
+
+      &:before {
+        left: 6px;
+        top: 9px;
+        transform: rotate(0);
+        width: 8px;
+      }
+
+      &:after {
+        width: 0;
+      }
+    }
+  }
+
+  /* stylelint-enable no-descending-specificity */
+
+  input:disabled + span {
+
+    &:before {
+      background-color: theme('colors.secondaryText');
+      border-color: theme('colors.secondaryText');
+      cursor: not-allowed;
+      opacity: .5;
+    }
+  }
+
+  input:checked + span {
+
+    &:before {
+      border: math.div($dot_size, 2) solid theme('colors.accent');
+      transition-delay: 0s;
+    }
+
+    > span {
+      transform: scale(1);
+      transition-delay: $time_delay;
+    }
+  }
+
+  input:focus + span:before {
+    outline: theme('colors.text') solid 2px;
+    outline-offset: 2px;
+  }
+
+  &__label:not(:empty) {
+    margin-left: theme('spacing.3');
+  }
+}

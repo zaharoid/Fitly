@@ -2,24 +2,24 @@
 // import type { NavItem } from '~t/SignTypes';
 // import { LINK_SIGNIN, LINK_DASHBOARD } from '~/entries/pageLinks';
 
-const NAV_ITEMS = ref<NavItem[]>([
-  {
-    id: 'privacy',
-    title: 'Privacy Policy',
-    link: 'https://montowire.ca/privacy-policy/',
-    target: '_blank',
-  }, {
-    id: 'terms',
-    title: 'Terms & Conditions',
-    link: 'https://montowire.ca/terms-of-use/',
-    target: '_blank',
-  }, {
-    id: 'amlPolicy',
-    title: 'AML Policy',
-    link: 'https://montowire.ca/aml-policy/',
-    target: '_blank',
-  },
-]);
+// const NAV_ITEMS = ref<NavItem[]>([
+//   {
+//     id: 'privacy',
+//     title: 'Privacy Policy',
+//     link: 'https://montowire.ca/privacy-policy/',
+//     target: '_blank',
+//   }, {
+//     id: 'terms',
+//     title: 'Terms & Conditions',
+//     link: 'https://montowire.ca/terms-of-use/',
+//     target: '_blank',
+//   }, {
+//     id: 'amlPolicy',
+//     title: 'AML Policy',
+//     link: 'https://montowire.ca/aml-policy/',
+//     target: '_blank',
+//   },
+// ]);
 
 const route = useRoute();
 // const { getLinkThisCompany } = useProjectLink();
@@ -42,17 +42,18 @@ const route = useRoute();
         <div class="t-grow">
           <slot />
         </div>
-        <SignNav
+        <!-- <SignNav
           :nav-items="NAV_ITEMS"
           screen-mode="mobile"
           class="lg:t-hidden t-mt-6"
-        />
-      </div>
-      <div class="v-layout-login__content-side v-layout-login__content-side--minor">
+        /> -->
+      <!-- </div> -->
+      <!-- <div class="v-layout-login__content-side v-layout-login__content-side--minor">
         <SignSidePart
           :nav-items="NAV_ITEMS"
         />
-      </div>
+      </div> -->
+    </div>
     </div>
   </ClientOnly>
 </template>
@@ -75,7 +76,7 @@ const route = useRoute();
     padding: theme('spacing.6');
 
     &--main {
-    //   background-color: theme('colors.cards');
+      //   background-color: theme('colors.cards');
       flex: 3 1 200px;
     }
 

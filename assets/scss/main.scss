@@ -1,7 +1,59 @@
+// SETTINGS AND TOOLS
+@import 'settings-tools';
+
+// GENERIC
+@import 'generic/generic.box-sizing';
+@import 'generic/generic.normalize';
+@import 'generic/generic.reset';
+
+// TAILWIND BASE
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
-body {
-  font-family: sans-serif;
-}
+
+// ELEMENTS
+@import 'elements/elements.fonts';
+@import 'elements/elements.images';
+@import 'elements/elements.links';
+@import 'elements/elements.page';
+@import 'elements/elements.tables';
+@import 'elements/elements.tooltip';
+
+// MODULES
+$icomoon-font-path: '/icomoon/fonts';
+
+@import '../../public/icomoon/style';
+
+// @import 'vue-multiselect/dist/vue-multiselect.css';
+// @import 'v-calendar/dist/style.css';
+
+// OBJECTS
+// Uncomment and add to this section as necessary.
+@import 'objects/objects.badges';
+@import 'objects/objects.buttons';
+@import 'objects/objects.checkbox';
+@import 'objects/objects.containers';
+@import 'objects/objects.date-component';
+@import 'objects/objects.date-picker';
+@import 'objects/objects.fields';
+@import 'objects/objects.operation-details';
+@import 'objects/objects.inputs';
+@import 'objects/objects.profile-card';
+@import 'objects/objects.radio';
+@import 'objects/objects.select-input';
+@import 'objects/objects.table-essence';
+@import 'objects/objects.table';
+@import 'objects/objects.text-special';
+@import 'objects/objects.wrappers';
+@import 'objects/objects.card';
+
+
+// COMPONENTS
+// Build and include your project’s UI components here.
+
+
+// UTILITIES
+@tailwind utilities; // tailwind utilities
+@import 'utilities/utilities.animations';
+@import 'utilities/utilities.headings';
+@import 'utilities/utilities.text';

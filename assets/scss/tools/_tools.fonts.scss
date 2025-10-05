@@ -1,0 +1,35 @@
+@use 'sass:list';
+
+/* ==========================================================================
+   # TOOLS FONTS
+   ========================================================================== */
+
+/**
+ *Adding new font in elements/elements.fonts
+ */
+@mixin add-font($name, $links, $weight: 'normal', $style: 'normal') {
+  $array_src: (null,);
+
+  @each $format, $link in $links {
+    $src_str: null;
+
+    @if $format == 'eot' {
+      $src_str: #{url($link + '.eot?#iefix') format('embedded-opentype')};
+    } @else if $format == 'woff' {
+      $src_str: #{url($link + '.woff') format('woff')};
+    } @else if $format == 'woff2' {
+      $src_str: #{url($link + '.woff') format('woff2')};
+    } @else if $format == 'ttf' {
+      $src_str: #{url($link + '.ttf') format('truetype')};
+    }
+
+    $array_src: list.join($array_src, $src_str);
+  }
+
+  @font-face {
+    font-family: $name;
+    font-style: #{$style};
+    font-weight: #{$weight};
+    src: $array_src;
+  }
+}

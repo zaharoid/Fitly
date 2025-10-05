@@ -1,0 +1,70 @@
+.o-ratio {
+  $self: &;
+  $dot_size: 20px;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+
+  input {
+    height: $dot_size;
+    margin: 0;
+    opacity: 0;
+    position: absolute;
+    width: $dot_size;
+  }
+
+  input + span {
+    display: block;
+    height: $dot_size;
+    min-width: $dot_size;
+    position: relative;
+    width: $dot_size;
+
+    &:not(:empty) {
+      padding-left: 36px;
+    }
+
+    &:before {
+      border: 1px solid theme('colors.secondaryText');
+      border-radius: $dot_size;
+      content: '';
+      display: block;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transition: border .2s ease;
+      width: 100%;
+    }
+  }
+
+  input:checked + span {
+
+    &:before {
+      border: 6px solid theme('colors.accent');
+    }
+  }
+
+  input:disabled + span {
+
+    &:before {
+      background-color: theme('colors.text');
+      border-color: theme('colors.text');
+    }
+  }
+
+  input:focus + span:before {
+    outline: theme('colors.text') solid 2px;
+    outline-offset: 2px;
+  }
+
+  &__label {
+    margin-left: theme('spacing.3');
+  }
+}
+
+.o-ratio-group {
+  display: grid;
+  grid-gap: theme('spacing.6');
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+}

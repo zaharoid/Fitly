@@ -11,7 +11,7 @@ module.exports = {
     ],
     plugins: ['vuejs-accessibility'],
     rules: {
-      "@typescript-eslint/no-explicit-any": ["off"],
+      "@typescript-eslint/no-explicit-any": "off",
       'vue/component-tags-order': [
         'error',
         {

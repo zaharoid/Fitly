@@ -1,0 +1,55 @@
+@use 'sass:math';
+
+.o-circle-badge {
+  $self: &;
+  align-items: center;
+  background-color: theme('colors.accent');
+  border-radius: 60px;
+  color: theme('colors.white');
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+
+  &--with-img {
+    align-items: flex-start;
+    height: 0;
+    justify-content: flex-start;
+    position: relative;
+  }
+
+  &__img {
+    height: 100%;
+    max-width: none;
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  $sizes: (
+    default: 32px,
+    small: 20px,
+  );
+
+  @each $title, $size in $sizes {
+
+    &--size-#{$title} {
+      border-radius: $size;
+      height: $size;
+      min-width: $size;
+      width: $size;
+
+      &#{$self}--with-img {
+        padding-left: math.div($size, 2);
+        width: $size;
+      }
+
+      &#{$self}--icon-size-half {
+        font-size: math.div($size, 2);
+      }
+
+      &#{$self}--icon-size-full {
+        font-size: $size;
+      }
+    }
+  }
+}

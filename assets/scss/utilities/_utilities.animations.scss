@@ -1,0 +1,132 @@
+.u-opac {
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity .3s ease !important;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+.u-opac-fast {
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity .1s ease !important;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+.u-opac-group,
+.u-opac-long-group {
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity .3s ease !important;
+  }
+
+  &-leave-active {
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+.u-opac-long-group {
+
+  &-enter-active,
+  &-leave-active {
+    transition-duration: .6s !important;
+  }
+}
+
+.u-slide {
+  $drop_directions: (
+    'notable-up': translateY(50%),
+    'notable-down': translateY(-50%),
+    'notable-left': translateX(50%),
+    'notable-right': translateX(-50%),
+    'up': translateY(30px),
+    'down': translateY(-30px),
+    'left': translateX(30px),
+    'right': translateX(-30px),
+  );
+
+  @each $_direction, $_property in $drop_directions {
+
+    &-#{$_direction} {
+
+      &-enter-from,
+      &-leave-to {
+        transform: $_property;
+      }
+    }
+  }
+
+  &-up,
+  &-down,
+  &-left,
+  &-right {
+
+    &-enter-from,
+    &-leave-to {
+      opacity: 0;
+    }
+
+    &-enter-active,
+    &-leave-active {
+      transition: opacity .2s ease, transform .2s ease;
+    }
+  }
+}
+
+.u-list {
+
+  &,
+  &-left,
+  &-right {
+
+    &-move,
+    &-enter-active,
+    &-leave-active {
+      transition: all .3s ease !important;
+    }
+
+    &-enter-from,
+    &-leave-to {
+      opacity: 0;
+    }
+
+    &-leave-active {
+      position: absolute;
+    }
+  }
+
+  $fade_directions: (
+    null: null,
+    '-left': translateX(-30px),
+    '-right': translateX(30px),
+  );
+
+  @each $_direction, $_property in $fade_directions {
+
+    &#{$_direction}-enter-from,
+    &#{$_direction}-leave-to {
+      transform: $_property;
+    }
+  }
+}
+

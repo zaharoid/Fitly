@@ -1,0 +1,72 @@
+.o-date-picker {
+  --vc-rounded-full: .25rem;
+  --vc-text-lg: theme('fontSize.base');
+  --vc-text-sm: theme('fontSize.sm');
+  --vc-font-family: theme('fontFamily.content');
+  --vc-gray-500: theme('colors.secondaryText');
+  --vc-gray-900: theme('colors.text');
+
+  .vc-blue {
+    --vc-accent-600: theme('colors.secondaryItems');
+    --vc-accent-200: theme('colors.secondaryBackground');
+    --vc-accent-900: theme('colors.text');
+  }
+
+  .vc-weeks {
+    min-width: 272px;
+  }
+
+  .vc-header .vc-title {
+    font-weight: var(--vc-font-bold);
+  }
+
+  .vc-day-content {
+    font-weight: var(--vc-font-normal);
+    line-height: 20px;
+  }
+
+  .vc-day-content,
+  .vc-highlight {
+    height: 36px;
+    width: 36px;
+  }
+
+  .vc-day {
+    min-height: 40px;
+  }
+
+  .vc-highlight.vc-highlight-base-middle {
+    width: 100%;
+  }
+
+  .vc-weekday {
+    font-weight: var(--vc-font-normal);
+  }
+
+  .vc-highlight-content-light {
+    font-weight: var(--vc-font-normal);
+  }
+
+  .vc-arrow {
+    font-family: $icomoon-font-family;
+    font-size: 12px;
+
+    svg {
+      display: none;
+    }
+
+    &.vc-prev {
+
+      &:before {
+        content: $icon-arrow-left;
+      }
+    }
+
+    &.vc-next {
+
+      &:before {
+        content: $icon-arrow-right;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+.o-wrapper-sign {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__inner {
+    margin-bottom: auto;
+    margin-top: auto;
+    max-width: 380px;
+    width: 100%;
+
+    &--start {
+      margin-top: theme('spacing.6');
+    }
+  }
+}
