@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as Yup from 'yup';
 import type { Field } from '~/types/Form/Field';
+import CircleBadge from '../Athoms/Badge/CircleBadge.vue';
 
 const props = defineProps({
   idPrefix: {
@@ -11,6 +12,13 @@ const props = defineProps({
 
 // const { t } = useI18n();
 const route = useRoute();
+const { signIn } = useAuth()
+
+const loginGoogle = () =>
+  signIn('google', { callbackUrl: '/' })
+
+const sendMagic = (email: string) =>
+  signIn('email', { email, callbackUrl: '/' })
 
 interface Submit {
   email: string
@@ -175,19 +183,50 @@ async function onSubmit (vals: Submit|unknown) {
         Submit
       </VBtn>
     </VForm>
-    <p class="o-text-separate t-mt-12">
+    <p class="o-text-separate t-mt-10">
       <span class="o-text-separate__inner">
-        Don't have an accout yet?
+        Or continue with
       </span>
     </p>
-    <VLinkBtn
+    <div class="t-flex t-gap-4">
+      <VBtn
+        :id="`${props.idPrefix}submit`"
+        class="t-w-full t-mt-4 t-flex"
+        :disabled="loading"
+        view-mode="secondary"
+        @click="loginGoogle"
+      >
+      <div class="t-flex t-items-center t-gap-3">
+        <CircleBadge
+          size="small"
+          :img="{ url: '/img/google.svg', alt: 'Google' }"
+      />
+      <p>
+        Google
+      </p>
+      </div>
+    </VBtn>
+    <VBtn
+      :id="`${props.idPrefix}submit`"
+      class="t-w-full t-mt-4 t-flex"
+      :disabled="loading"
+    >
+      Magic Link
+    </VBtn>
+    </div>
+    <div class="t-flex t-justify-end t-items-center t-gap-2 t-mt-6">
+      <span class="t-text-secondaryText">
+        Don't have an account yet?
+      </span>
+      <VLinkBtn
       :id="`${props.idPrefix}alt-link`"
       tag="NuxtLink"
       to="/signup"
       view-mode="ghost-primary"
-      class="t-mt-4 t-self-center"
+      class="t-self-center"
     >
       Sign up
     </VLinkBtn>
+    </div>
   </div>
 </template>

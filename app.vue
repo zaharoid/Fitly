@@ -7,19 +7,13 @@ const isOnline = useOnline();
 const { initialize } = useHotjar();
 const runtimeConfig = useRuntimeConfig();
 
-onMounted(() => {
-  if (runtimeConfig.public.hotjarId) {
-    console.log('Hotjar initialized!');
-    initialize();
-  }
-});
+const { status } = useAuth();
 
 watch(isOnline, () => {
   if (!isOnline.value) {
     throw createError({ statusMessage: 'No internet connection', fatal: true });
   }
 }, { immediate: true });
-
 
 nuxtApp.hook('page:start', () => {
   loading.value = true;
@@ -34,7 +28,7 @@ nuxtApp.hook('page:finish', () => {
   <NuxtLayout>
     <!-- <NotificationList /> -->
     <!-- <MessageList /> -->
-    <PopupGlobal />
+    <!-- <PopupGlobal /> -->
     <!-- Here we can add a custom preloader component -->
 
     <NuxtLoadingIndicator :height="5" />

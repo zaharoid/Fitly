@@ -9,12 +9,27 @@ export default defineNuxtConfig({
     '~m': fileURLToPath(new URL('./mappers', import.meta.url)),
   },
   runtimeConfig: {
+    authSecret: process.env.AUTH_SECRET,
     public: {
       apiBase: '',
       urlServices: '',
+      appUrl: process.env.NUXT_PUBLIC_APP_URL,
       nodeEnv: process.env.NODE_ENV,
       appVersion: process.env.NUXT_PUBLIC_APP_VERSION,
       hotjarId: process.env.NUXT_PUBLIC_HOTJAR_ID || '',
+    },
+    email: {
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      user: process.env.EMAIL_SERVER_USER,
+      pass: process.env.EMAIL_SERVER_PASSWORD,
+      from: process.env.EMAIL_FROM,
+    },
+    auth: {
+      isEnabled: true,
+      baseURL: '/api/auth',
+      provider: { type: 'authjs' },
+      globalAppMiddleware: false
     },
     tokenParams: {
       secretKey: 'thisisahellbelivemeiveseenit',
@@ -47,6 +62,7 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     'nuxt-module-hotjar',
     '@nuxt/eslint',
+    '@sidebase/nuxt-auth',
   ],
   devtools: {
     enabled: true,
@@ -114,7 +130,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@use "sass:math";',
+          additionalData: '@use "sass:math"; @import "./assets/scss/settings-tools";',
         },
       },
     },

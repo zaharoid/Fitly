@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import NavigateLink from '../Molucules/NavigateLink/NavigateLink.vue';
+
 
 // import type { NavLink } from '~/types'; // Adjust the import path to the correct location of NavLink type
 
@@ -7,7 +9,7 @@ const props = defineProps({
     type: Array as PropType<any[]>,
     default: () => [],
   },
-  footerLinks: {
+  actions: {
     type: Array as PropType<any[]>,
     default: () => [],
   },
@@ -23,7 +25,7 @@ function isNewTransferLink (link: any) {
 
 <template>
   <aside
-    v-if="props.mainLinks?.length || props.footerLinks?.length"
+    v-if="props.mainLinks?.length || props.actions?.length"
     class="v-default-sidebar"
   >
     <ul
@@ -42,29 +44,28 @@ function isNewTransferLink (link: any) {
           :count="link.count"
           :icon="link.icon"
           :exact="link.exact"
-          :disabled="link.disabled || (isNewTransferLink(link) && companiesStore.isStatusClosed)"
+          :disabled="link.disabled"
           @click="$emit('clickItem', link)"
         />
       </li>
     </ul>
     <ul
-      v-if="props.footerLinks?.length"
+      v-if="props.actions?.length"
       class="v-default-sidebar__list"
     >
       <li
-        v-for="link in props.footerLinks"
-        :key="link.id"
+        v-for="actionItem in props.actions"
+        :key="actionItem.id"
       >
         <NavigateLink
-          :id="link.id"
-          :title="link.title"
-          :path="link.path"
-          :count="link.count"
-          :data-test="`${link.title?.toLowerCase().split(' ').join('-')}-sidebar-item`"
-          :icon="link.icon"
-          :disabled="link.disabled"
-          :exact="link.exact"
-          @click="$emit('clickItem', link)"
+          :id="actionItem.id"
+          :title="actionItem.title"
+          :count="actionItem.count"
+          :data-test="`${actionItem.title?.toLowerCase().split(' ').join('-')}-sidebar-item`"
+          :icon="actionItem.icon"
+          :disabled="actionItem.disabled"
+          :exact="actionItem.exact"
+          :action="actionItem.action"
         />
       </li>
     </ul>
@@ -73,12 +74,13 @@ function isNewTransferLink (link: any) {
 
 <style lang="scss">
 .v-default-sidebar {
-//   background: theme('colors.cards');
+  background: theme('colors.cards');
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 20px 16px;
+  justify-content: space-between;
+  padding: 20px 12px;
 
   &__list {
     display: flex;

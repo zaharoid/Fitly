@@ -1,53 +1,62 @@
-import type { NitroFetchOptions } from 'nitropack';
-// import { utilGetSessionTokenHeader } from '~/utils/sessionTokenHeader';
-// import { utilGetPageAccesses } from '~/utils/pageAccesses';
-// import { useForceLogout } from '~x/featureRequests/useRequestLogout';
+// plugins/ufetch.ts
+import type { NitroFetchOptions } from 'nitropack'
 
-interface UfetchOptions extends NitroFetchOptions<string> {
+interface UfetchOptions<T extends string = string> extends NitroFetchOptions<T> {
   disableInterceptors?: boolean
 }
 
-export default defineNuxtPlugin((nuxtApp: unknown) => {
-  function interceptorsUFetch (data: { [key: string]: unknown }) {
-    // const updatePrivacyPolicy = data?.response?.status === 451;
-    // const doLogout = data?.response?.status === 401;
-    // const route = nuxtApp.$router.currentRoute;
-    // const thisPageAccesses = utilGetPageAccesses(route?.meta?.authAccess as string);
-    // if (process.client && doLogout) {
-    //   if (route.value.name === 'signin') return;
-    //   useForceLogout({ issueType: 'token', pageAccesses: thisPageAccesses });
-    // }
-    // if (process.client && updatePrivacyPolicy) {
-    //   usePrivacyPolicyBlock();
-    // }
+export default defineNuxtPlugin(() => {
+  function interceptorsUFetch (ctx: { response?: Response; error?: any }) {
+    const status = ctx?.response?.status
+    // авто-логаут при 401
+    if (process.client && status === 401) {
+      // не зацикливаемся на /signin
+      if (useRoute().name !== 'signin') {
+        const { signOut } = useAuth()
+        signOut({ callbackUrl: '/signin' })
+      }
+    }
+    // тут же можно обработать 451 / policy и т.п.
   }
 
   return {
     provide: {
-      ufetch<T> (resource: string, options?: UfetchOptions) {
+      async ufetch<T> (resource: string, options?: UfetchOptions) {
         const {
+          onRequest = () => {},
           onResponse = () => {},
           disableInterceptors = false,
-          ...otherOptions
-        } = options || {};
+          ...other
+        } = options || {}
 
-        // const headers = Object.assign(useRequestHeaders(['cookie']));
+        // куки на сервере, чтобы SSR держал сессию
+        const headers: HeadersInit = {
+          ...(process.server ? useRequestHeaders(['cookie']) : undefined),
+          ...(other.headers as any),
+        }
+
+        // csrf токен из cookie (если подключишь nuxt-csurf)
+        const csrf = process.client ? useCookie('csrf').value : undefined
+        if (csrf && other.method && other.method !== 'GET') {
+          (headers as Record<string, string>)['x-csrf-token'] = csrf as string
+        }
 
         return $fetch<T>(resource, {
           credentials: 'include',
-        //   headers,
           retry: 0,
+          headers,
+          onRequest,
           onResponse: (args) => {
-            if (!disableInterceptors) interceptorsUFetch(args);
-            onResponse(args);
+            if (!disableInterceptors) interceptorsUFetch(args)
+            onResponse(args)
           },
           onResponseError: (args) => {
-            if (!disableInterceptors) interceptorsUFetch(args);
-            // keep original behavior: do not swallow the error; $fetch will rethrow after hooks
+            if (!disableInterceptors) interceptorsUFetch(args)
           },
-          ...otherOptions,
-        });
+          ...other,
+        })
       },
     },
-  };
-});
+  }
+}
+)

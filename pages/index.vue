@@ -2,21 +2,16 @@
 import { useHeadTitle } from '~/compasables/useHead';
 
 definePageMeta({
-  layout: 'auth',
+  layout: 'default',
   authAccess: 'auth',
 });
 useHead({
   title: useHeadTitle('Sign in'),
 });
+console.log(123123123123123);
+
 </script>
 
 <template>
-  <div class="o-wrapper-sign">
-    <div class="o-wrapper-sign__inner">
-      <!-- <SignInPart
-        id-els-prefix="signin-"
-      /> -->
-      MAIN PAGE
-    </div>
-  </div>
+  <!-- <SvgLogo /> -->
 </template>

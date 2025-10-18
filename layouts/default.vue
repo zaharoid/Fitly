@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { useSidebarData } from '~/compasables/useSidebarData';
 
-// const resizeStore = useResizeStore();
+
+const resizeStore = useResizeStore();
+const { mainLinks, actions } = useSidebarData();
+
 // const {
 //   showContent,
 //   showInsteadOfContent,
@@ -38,14 +42,17 @@
     <div class="v-layout-default">
       <DefaultHeader />
       <main class="v-layout-default__main">
-        <!-- <Transition name="u-opac">
+        <!-- <Transition name="u-opac"> -->
           <DefaultSidebar
-            v-if="resizeStore.mq.from_md"
             class="v-layout-default__sidebar t-z-navbar"
             :main-links="mainLinks"
-            :footer-links="footerLinks"
+            :actions="actions"
           />
-        </Transition>
+        <!-- </Transition> -->
+        <div class="v-layout-default__content">
+          <slot />
+        </div>
+        <!-- 
         <div
           v-show="localShowContent"
           :class="{
@@ -54,7 +61,6 @@
           }"
         >
           <BreadcrumbsGlobal class="t-mb-4" />
-          <slot />
         </div>
         <div
           v-if="!localShowContent"
@@ -113,7 +119,7 @@
   </ClientOnly>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .v-layout-default {
   min-height: 100%;
   padding-top: 52px;

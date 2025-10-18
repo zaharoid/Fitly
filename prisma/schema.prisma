@@ -1,0 +1,94 @@
+// =========================
+// Prisma Schema for Fitly
+// Auth + Sessions + Magic Link + Action Tokens
+// =========================
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -------------------------
+// USERS
+// -------------------------
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  deletedAt     DateTime?
+  passwordHash   String?
+
+  accounts Account[]
+  sessions Session[]
+
+  actionTokens ActionToken[] @relation("UserActionTokens")
+}
+
+// -------------------------
+// ACCOUNTS (OAuth providers)
+// -------------------------
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// -------------------------
+// SESSIONS (Auth.js sessions)
+// -------------------------
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// -------------------------
+// VERIFICATION TOKENS (magic links)
+// -------------------------
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// -------------------------
+// ACTION TOKENS (delete/export/change-email)
+// -------------------------
+model ActionToken {
+  id        String    @id @default(cuid())
+  userId    String
+  action    String
+  tokenHash String    @unique
+  payload   String?
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation("UserActionTokens", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
