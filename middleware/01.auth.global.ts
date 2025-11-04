@@ -1,7 +1,8 @@
 // middleware/auth.global.ts
 export default defineNuxtRouteMiddleware(async (to) => {
-    const publicPages = ['/signin', '/signup']
-    const isPublic = publicPages.includes(to.path)
+  const publicPages = ['/signin', '/signup', '/signin/magic-link']
+  // publicPages.includes(to.path)
+    const isPublic = true
   
     // ── SSR: проверяем сессию через /api/auth/session с куками
     if (import.meta.server) {
@@ -17,7 +18,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       if (!session?.user && !isPublic) {
         return navigateTo(`/signin?redirect=${encodeURIComponent(to.fullPath)}`)
       }
-      if (session?.user && isPublic) {
+      if (session?.user && isPublic && to.path !== '/') {
         return navigateTo('/')
       }
       return
@@ -31,7 +32,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo(`/signin?redirect=${encodeURIComponent(to.fullPath)}`)
     }
   
-    if (status.value === 'authenticated' && isPublic) {
+    if (status.value === 'authenticated' && isPublic && to.path !== '/') {
       return navigateTo('/')
     }
   })

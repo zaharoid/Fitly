@@ -5,6 +5,7 @@ const loading = ref(true);
 
 const isOnline = useOnline();
 const { initialize } = useHotjar();
+const indicator = useLoadingIndicator({ throttle: 0 })
 const runtimeConfig = useRuntimeConfig();
 
 const { status } = useAuth();
@@ -15,19 +16,16 @@ watch(isOnline, () => {
   }
 }, { immediate: true });
 
-nuxtApp.hook('page:start', () => {
-  loading.value = true;
-});
 
-nuxtApp.hook('page:finish', () => {
-  loading.value = false;
-});
+nuxtApp.hook('page:start', () => indicator.start())
+nuxtApp.hook('page:finish', () => indicator.finish())
+
 </script>
 
 <template>
   <NuxtLayout>
-    <!-- <NotificationList /> -->
-    <!-- <MessageList /> -->
+    <NotificationList />
+    <MessageList />
     <!-- <PopupGlobal /> -->
     <!-- Here we can add a custom preloader component -->
 

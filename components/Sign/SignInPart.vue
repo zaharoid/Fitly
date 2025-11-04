@@ -2,9 +2,10 @@
 import * as Yup from 'yup';
 import type { Field } from '~/types/Form/Field';
 import CircleBadge from '../Athoms/Badge/CircleBadge.vue';
+import SvgLogo from '../Athoms/Svg/SvgLogo.vue';
 
 const props = defineProps({
-  idPrefix: {
+  idElsPrefix: {
     type: String,
     default: '',
   },
@@ -14,11 +15,11 @@ const props = defineProps({
 const route = useRoute();
 const { signIn } = useAuth()
 
-const loginGoogle = () =>
-  signIn('google', { callbackUrl: '/' })
-
-const sendMagic = (email: string) =>
-  signIn('email', { email, callbackUrl: '/' })
+const loginGoogle = async () => {
+  loading.value = true
+  await signIn('google', { callbackUrl: '/' })
+  loading.value = false
+}
 
 interface Submit {
   email: string
@@ -66,7 +67,6 @@ async function onSubmit (vals: Submit|unknown) {
   if (loading.value) return;
   mainError.value = '';
   loading.value = true;
-  console.log(vals);
   
 //   try {
 //     const res = await useRequestLogin({
@@ -119,6 +119,13 @@ async function onSubmit (vals: Submit|unknown) {
 }
 </script>
 <template>
+    <transition name="u-opac">
+      <LoadingOverlay
+        v-if="loading"
+        overlay="semi"
+        mode="full-fixed"
+      />
+    </transition>
   <TwoFaPart
     v-if="twoFaPayload.isRequired"
     v-bind="twoFaPayload"
@@ -128,16 +135,17 @@ async function onSubmit (vals: Submit|unknown) {
     <SignHeading>
       Sign in your account
     </SignHeading>
+    <span class="t-text-secondaryText t-mb-6">Quick and secure — no password required </span>
     <TransitionExpand>
       <SignMainMessage
         v-if="mainError"
-        :id-els-prefix="props.idPrefix"
+        :id-els-prefix="props.idElsPrefix"
         class="t-mb-6"
       >
         {{ mainError }}
       </SignMainMessage>
     </TransitionExpand>
-    <VForm
+    <!-- <VForm
       :validation-schema="validationSchema"
       class="t-flex t-flex-col t-w-full"
       @submit="onSubmit"
@@ -172,7 +180,6 @@ async function onSubmit (vals: Submit|unknown) {
         to="/sign-recovery"
       >
         Forgot your password?
-        <!-- !lang -->
       </NuxtLink>
       <VBtn
         :id="`${props.idPrefix}submit`"
@@ -182,16 +189,16 @@ async function onSubmit (vals: Submit|unknown) {
       >
         Submit
       </VBtn>
-    </VForm>
-    <p class="o-text-separate t-mt-10">
+    </VForm> -->
+    <!-- <p class="o-text-separate t-mt-10">
       <span class="o-text-separate__inner">
         Or continue with
       </span>
-    </p>
-    <div class="t-flex t-gap-4">
+    </p> -->
+    <div class="t-flex t-gap-4 t-mb-8">
       <VBtn
-        :id="`${props.idPrefix}submit`"
-        class="t-w-full t-mt-4 t-flex"
+        :id="`${props.idElsPrefix}submit`"
+        class="t-w-full"
         :disabled="loading"
         view-mode="secondary"
         @click="loginGoogle"
@@ -207,14 +214,16 @@ async function onSubmit (vals: Submit|unknown) {
       </div>
     </VBtn>
     <VBtn
-      :id="`${props.idPrefix}submit`"
-      class="t-w-full t-mt-4 t-flex"
+      :id="`${props.idElsPrefix}submit`"
+      class="t-w-full"
       :disabled="loading"
+      @click="navigateTo('/signin/magic-link')"
     >
       Magic Link
     </VBtn>
     </div>
-    <div class="t-flex t-justify-end t-items-center t-gap-2 t-mt-6">
+    <span class="t-text-secondaryText">By clicking the button, you agree to the Terms and Conditions and Privacy Policy.</span>
+    <!-- <div class="t-flex t-flex-col t-justify-end t-items-center t-gap-2 t-mt-6">
       <span class="t-text-secondaryText">
         Don't have an account yet?
       </span>
@@ -227,6 +236,7 @@ async function onSubmit (vals: Submit|unknown) {
     >
       Sign up
     </VLinkBtn>
-    </div>
+    </div> -->
   </div>
 </template>
+Last few GCs

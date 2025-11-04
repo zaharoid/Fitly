@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import { useHeadTitle } from '~/compasables/useHead';
 
+type RegistrationBody = {
+  email: string
+  password: string
+  username: string
+}
+
 definePageMeta({
   layout: 'auth',
   authAccess: 'unauth',
 });
 useHead({ title: useHeadTitle('Sign up') });
+
+const { $ufetch } = useNuxtApp();
 
 const route = useRoute();
 const router = useRouter();
@@ -14,7 +22,11 @@ const mainError = ref('');
 const loading = ref(false);
 
 
-async function onSubmit (vals: unknown) {
+async function onSubmit (body: RegistrationBody) {
+  await $ufetch('/api/forms/register', {
+    method: 'POST',
+    body,
+  })
   // mainError.value = '';
   // loading.value = true;
   // const res = await useRequestSignUpCheckEmail(vals);
@@ -31,7 +43,7 @@ const idElsPrefix = 'signup-';
 
 <template>
   <div class="o-wrapper-sign">
-    <div class="o-wrapper-sign__inner">
+    <!-- <div class="o-wrapper-sign__inner">
       <SignHeading>
         Create new account
       </SignHeading>
@@ -48,6 +60,6 @@ const idElsPrefix = 'signup-';
         @submit="onSubmit"
       />
     </div>
-    <SignNavBottom />
+    <SignNavBottom /> -->
   </div>
 </template>

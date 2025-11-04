@@ -3,6 +3,8 @@ import GoogleProviderModule from 'next-auth/providers/google'
 import EmailProviderModule from 'next-auth/providers/email'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '~/server/utils/prisma'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs'
 
 const GoogleProvider: any =
   typeof GoogleProviderModule === 'function'
@@ -19,46 +21,83 @@ export default NuxtAuthHandler({
   secret: process.env.AUTH_SECRET,
   session: { strategy: 'database' },
   useSecureCookies: false,
+  debug: process.env.NODE_ENV === 'development',
 
   providers: [
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? [GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID!,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         })]
       : []),
+    EmailProvider({
+      from: process.env.EMAIL_FROM!,
+      server: {
+        host: process.env.EMAIL_SERVER_HOST!,
+        port: Number(process.env.EMAIL_SERVER_PORT || 587),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER!,
+          pass: process.env.EMAIL_SERVER_PASSWORD!,
+        },
+      },
 
-    ...(process.env.EMAIL_SERVER_HOST
-      ? [EmailProvider({
-          async sendVerificationRequest({ identifier, url }) {
-            // создаём transporter ТОЛЬКО здесь
-            const { createTransport } = await import('nodemailer')
-            const transporter = createTransport({
-              host: process.env.EMAIL_SERVER_HOST,
-              port: Number(process.env.EMAIL_SERVER_PORT || 587),
-              auth: {
-                user: process.env.EMAIL_SERVER_USER,
-                pass: process.env.EMAIL_SERVER_PASSWORD
-              },
-              secure: false
-            })
-            await transporter.sendMail({
-              from: process.env.EMAIL_FROM,
-              to: identifier,
-              subject: 'Your Fitly magic link',
-              text: url,
-              html: `<a href="${url}">${url}</a>`
-            })
-          }
-        })]
-      : [])
+      async sendVerificationRequest({ identifier, url, provider }: any) {
+        const nodemailer = await import('nodemailer')
+
+        const transport = nodemailer.createTransport({
+          host: (provider.server as any).host,
+          port: (provider.server as any).port,
+          auth: (provider.server as any).auth,
+        })
+
+        try {
+          await transport.verify()
+          console.log('[auth] SMTP verify: OK')
+
+          const info = await transport.sendMail({
+            to: identifier,
+            from: provider.from,
+            subject: 'Your magic link to sign in',
+            text: `Sign in: ${url}`,
+            html: `<p>Sign in: <a href="${url}">${url}</a></p>`,
+          })
+        } catch (err) {
+          console.error('[auth] email send error:', err)
+          throw err;
+        }
+      },
+    }),
+    // CredentialsProvider({
+    //   name: 'Credentials',
+    //   credentials: {
+    //     email: { label: 'Email', type: 'text' },
+    //     password: { label: 'Password', type: 'password' },
+    //   },
+    //   async authorize (credentials) {
+    //     const email = credentials?.email?.trim().toLowerCase()
+    //     const password = credentials?.password ?? ''
+
+    //     if (!email || !password) return null
+
+    //     const user = await prisma.user.findUnique({ where: { email } })
+    //     if (!user || !user.passwordHash) {
+    //       return null
+    //     }
+
+    //     const ok = await bcrypt.compare(password, user.passwordHash)
+    //     if (!ok) return null
+
+    //     return { id: user.id, email: user.email!, name: user.name ?? undefined }
+    //   },
+    // }),
   ],
 
   pages: { signIn: '/signin' },
+
   callbacks: {
     async session({ session, user }) {
       if (session.user) (session.user as { id?: string }).id = user.id
       return session
-    }
-  }
+    },
+  },
 })

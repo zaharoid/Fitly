@@ -1,4 +1,4 @@
 export const useHeadTitle = (page: string) => {
-    return `Montowire | ${page}`;
+    return `Fitly | ${page}`;
   };
   
