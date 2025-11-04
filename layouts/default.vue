@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useSidebarData } from '~/compasables/useSidebarData';
 
-
 const resizeStore = useResizeStore();
 const { mainLinks, actions } = useSidebarData();
 
@@ -171,7 +170,7 @@ const { mainLinks, actions } = useSidebarData();
     top: 86px;
     transform: translateX(-296px);
     transition: transform .3s ease;
-    width: 280px;
+    width: 200px;
 
     @screen md {
       transform: translateX(0);
