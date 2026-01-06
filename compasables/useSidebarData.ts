@@ -1,4 +1,4 @@
-import { LINK_DASHBOARD } from '~/entries/pageLinks';
+import { LINK_DASHBOARD, LINK_GOALS, LINK_MEALS } from '~/entries/pageLinks';
 import { utilToKebabCase } from '~/utils/text';
 import { useLogout } from './useLogout';
 
@@ -28,6 +28,20 @@ export const useSidebarData = () => {
         path: LINK_DASHBOARD(),
         title: 'Dashboard',
         icon: 'item-table-list',
+        disabled: false,
+        exact: true,
+        count: 0,
+      }, {
+        path: LINK_GOALS(),
+        title: 'Goals',
+        icon: 'item-target',
+        disabled: false,
+        exact: true,
+        count: 0,
+      }, {
+        path: LINK_MEALS(),
+        title: 'Meals',
+        icon: 'item-target',
         disabled: false,
         exact: true,
         count: 0,

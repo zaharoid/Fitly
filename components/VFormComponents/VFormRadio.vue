@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import useVFormCommon from './useVFormCommon';
 import commonProps from './commonProps';
-import type { OptionRadio } from '~t/Option';
+import type { OptionRadio } from '~/types/Option';
 
 const props = defineProps({
   ...commonProps,

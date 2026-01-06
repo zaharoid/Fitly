@@ -1,8 +1,3 @@
-// =========================
-// Prisma Schema for Fitly
-// Auth + Sessions + Magic Link + Action Tokens
-// =========================
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
@@ -12,9 +7,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// -------------------------
-// USERS
-// -------------------------
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -22,17 +21,23 @@ model User {
   emailVerified DateTime?
   image         String?
   deletedAt     DateTime?
-  passwordHash   String?
+  passwordHash  String?
 
-  accounts Account[]
-  sessions Session[]
+  sex        String?
+  age        Int?
+  heightCm   Float?
+  weightKg   Float?
 
-  actionTokens ActionToken[] @relation("UserActionTokens")
+  accounts      Account[]
+  sessions      Session[]
+  actionTokens  ActionToken[] @relation("UserActionTokens")
+
+  meals         Meal[]
+  recipes       Recipe[]
+  metrics       Metric[]
+  goal          Goal?
 }
 
-// -------------------------
-// ACCOUNTS (OAuth providers)
-// -------------------------
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -52,9 +57,6 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-// -------------------------
-// SESSIONS (Auth.js sessions)
-// -------------------------
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -64,9 +66,6 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// -------------------------
-// VERIFICATION TOKENS (magic links)
-// -------------------------
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -75,9 +74,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// -------------------------
-// ACTION TOKENS (delete/export/change-email)
-// -------------------------
 model ActionToken {
   id        String    @id @default(cuid())
   userId    String
@@ -91,4 +87,94 @@ model ActionToken {
   user User @relation("UserActionTokens", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  name       String
+  nameKey    String   @unique
+  brand      String? 
+  servingQty Float    @default(100)
+  kcal       Float
+  protein    Float    @default(0)
+  carbs      Float    @default(0)
+  fat        Float    @default(0)
+  createdAt  DateTime @default(now())
+  imageUrl String?
+
+  @@index([name])
+}
+
+model Meal {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime              // день (UTC, без времени)
+  time      DateTime              // точное время приёма
+  mealType  MealType              // BREAKFAST/LUNCH/DINNER/SNACK
+
+  itemsJson Json                  // [{ productId?, name, grams, kcal, protein, carbs, fat }, ...]
+  kcal      Float    @default(0)
+  protein   Float    @default(0)
+  carbs     Float    @default(0)
+  fat       Float    @default(0)
+  isPlan    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([userId, date, mealType])
+}
+
+model Recipe {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  itemsJson  Json
+  totalKcal  Float  @default(0)
+  totalP     Float  @default(0)
+  totalC     Float  @default(0)
+  totalF     Float  @default(0)
+  servings   Int    @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, name])
+}
+
+model Metric {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime  // дата (UTC 00:00)
+  weightKg  Float?
+  steps     Int?
+  hrRest    Int?      // опционально
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model Goal {
+  id              String   @id @default(cuid())
+  userId          String
+  weightCurrent   Float?
+  weightTarget    Float?
+  kcalTarget Float?
+  proteinTarget   Float?
+  carbsTarget     Float?
+  fatTarget       Float?
+  activityLevel   String?
+  deadline        DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
 }

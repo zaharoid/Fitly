@@ -25,6 +25,15 @@ module.exports = {
       gt: '1440px',
     },
     colors: {
+      gray: {
+        50: '#F9FAFB', // Светлый серый для текста
+        300: '#D1D5DB', // Мягкий серый для текста
+        900: '#111827', // Темный серый для карточек
+        950: '#0F172A',
+      },
+      blue: {
+        400: '#60A5FA',
+      },
       primary: '#A78BFA',
       primaryHover: '#9B8FFF',
       primaryPressed: '#7C6EE6',
@@ -35,14 +44,16 @@ module.exports = {
       accentPressed: '#4C1D95',
       inactive: '#D1D5DB',
       secondaryItems: '#8B5CF6',
+      mediumStateBlue: '#9b64f4',
       secondaryStroke: '#a9c5ef',
       cards: '#FFFFFF',
-      secondaryBackground: '#F3F4F6',
-      devider: '#E5E7EB',
+      secondaryBackground: '#dfecff',
+      fuchsia: '#d94ee3',
       greyNobel: '#B4B4B4',
       minorBackground: '#F9FAFB',
       success: '#10B981',
-      warning: '#F59E0B',
+      warning: '#f6b50c',
+      warningBg: '#fcf6d5',
       critical: '#EF4444',
       info: '#3B82F6',
       background: '#FAF9FF',

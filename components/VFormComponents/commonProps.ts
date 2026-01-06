@@ -1,4 +1,4 @@
-import type { AbstractField } from '~t/Field';
+import type { AbstractField } from "~/types/Form/Field";
 
 const commonProps = {
   // dublicate required props in component

@@ -6,7 +6,9 @@ definePageMeta({
   authAccess: 'auth',
 });
 
-console.log(123123123123123);
+onMounted(() => {
+  useHeadTitle('Главная');
+});
 
 </script>
 

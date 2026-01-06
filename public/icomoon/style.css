@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?b8wkuv') format('truetype'),
-    url('fonts/icomoon.woff?b8wkuv') format('woff'),
-    url('fonts/icomoon.svg?b8wkuv#icomoon') format('svg');
+    url('fonts/icomoon.ttf?pegvgj') format('truetype'),
+    url('fonts/icomoon.woff?pegvgj') format('woff'),
+    url('fonts/icomoon.svg?pegvgj#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -257,4 +257,7 @@
 }
 .icon-user-main:before {
   content: "\e91d";
+}
+.icon-item-target:before {
+  content: "\e9b3";
 }

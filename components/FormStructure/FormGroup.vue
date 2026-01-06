@@ -8,7 +8,6 @@ const props = defineProps({
     default: () => [],
   },
   originValues: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     type: Object as PropType<{ [key: string]: any }>,
     default: () => ({}),
   },

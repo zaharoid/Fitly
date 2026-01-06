@@ -3,9 +3,9 @@
 @font-face {
   font-family: '#{$icomoon-font-family}';
   src:
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?b8wkuv') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?b8wkuv') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?b8wkuv##{$icomoon-font-family}') format('svg');
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?pegvgj') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?pegvgj') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?pegvgj##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -414,6 +414,11 @@
 .icon-user-main {
   &:before {
     content: $icon-user-main; 
+  }
+}
+.icon-item-target {
+  &:before {
+    content: $icon-item-target; 
   }
 }
 
