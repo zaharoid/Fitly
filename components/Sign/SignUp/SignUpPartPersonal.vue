@@ -22,7 +22,7 @@ const props = defineProps({
   },
 });
 
-const { t } = useI18n();
+// const { t } = useI18n();
 
 const phoneSuccess = ref(true);
 const termsIsAccepted = ref<boolean>(false);
@@ -77,10 +77,10 @@ const fields = computed<Field[]>(() => [
     selfAction: (data: any) => {
       phoneSuccess.value = Boolean(data.valid);
     },
-    validation:
-      Yup.string().required().label('Phone number').test(
-        'phone', () => t('form_errors.invalid', { name: 'Phone number' }), () => phoneSuccess.value,
-      ),
+    // validation:
+    //   Yup.string().required().label('Phone number').test(
+    //     'phone', () => t('form_errors.invalid', { name: 'Phone number' }), () => phoneSuccess.value,
+    //   ),
   }, {
     name: 'concern',
     label: 'I agree with <a data-test="terms-and-conditions-btn" class="t-text-secondaryItems" href="https://montowire.ca/terms-of-use/">terms and conditions</a> and <a data-test="privacy-policy-btn" class="t-text-secondaryItems" href="https://montowire.ca/privacy-policy/">privacy policy</a>',

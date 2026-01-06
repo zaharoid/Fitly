@@ -3,6 +3,7 @@ import useVFormCommon from './useVFormCommon';
 import commonProps from './commonProps';
 import type { BtnViewMode } from '~/types/Btn';
 import type { MaskInputOptions } from 'maska';
+import MaskaInput from '../Inputs/MaskaInput.vue';
 
 interface PropFuncBtn {
   text?: string,

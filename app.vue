@@ -12,7 +12,7 @@ const { status } = useAuth();
 
 watch(isOnline, () => {
   if (!isOnline.value) {
-    throw createError({ statusMessage: 'No internet connection', fatal: true });
+    // throw createError({ statusMessage: 'No internet connection', fatal: true });
   }
 }, { immediate: true });
 

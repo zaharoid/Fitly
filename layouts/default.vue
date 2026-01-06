@@ -131,7 +131,7 @@ const { mainLinks, actions } = useSidebarData();
     transition: padding ease .3s;
 
     @screen md {
-      padding-left: 296px;
+      padding-left: 216px;
     }
   }
 
@@ -167,7 +167,7 @@ const { mainLinks, actions } = useSidebarData();
     left: theme('spacing.4');
     overflow: auto;
     position: fixed;
-    top: 86px;
+    top: 94px;
     transform: translateX(-296px);
     transition: transform .3s ease;
     width: 200px;

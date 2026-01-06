@@ -53,6 +53,7 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    '@ant-design-vue/nuxt',
     '@nuxt/devtools',
     '@nuxtjs/stylelint-module',
     '@vueuse/nuxt',
@@ -131,6 +132,7 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@use "sass:math"; @import "./assets/scss/settings-tools";',
+          quietDeps: true,
         },
       },
     },

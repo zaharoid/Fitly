@@ -53,7 +53,7 @@
     }
 
     #{$self}__group:not(:first-child) {
-      border-top: 1px solid theme('colors.devider');
+      border-top: 1px solid theme('colors.divider');
     }
   }
 }
