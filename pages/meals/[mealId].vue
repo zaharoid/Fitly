@@ -19,13 +19,13 @@ async function changeType(newType: string) {
 </script>
 
 <template>
-  <div class="t-p-6 t-min-h-screen t-bg-[var(--bg,#0f1114)] t-text-[var(--text,#eef0f3)]">
+  <div class="t-p-6 t-min-h-screen t-bg-cards t-rounded-xl">
     <div class="t-max-w-4xl t-mx-auto t-space-y-4">
-      <div class="v-card t-bg-[var(--panel,#171a1f)] t-rounded-3xl t-p-5 t-flex t-justify-between t-items-center">
-        <h1 class="t-text-lg t-font-semibold">Meal</h1>
-        <NuxtLink to="/meals" class="t-btn">Back</NuxtLink>
+      <div class="v-card t-rounded-3xl t-p-5 t-flex t-justify-between t-items-center">
+        <h1 class="t-text-xl t-font-semibold">Meal</h1>
+        <VBtn @click="navigateTo('/meals')" class="t-btn">Back</VBtn>
       </div>
-
+      
       <div v-if="meal">
         <MealEditor :meal="meal" @save="onSaved" @change-type="changeType" />
       </div>
@@ -35,7 +35,3 @@ async function changeType(newType: string) {
     </div>
   </div>
 </template>
-
-<style scoped>
-.t-btn { @apply t-text-xs t-rounded-xl t-px-3 t-py-1 t-bg-white/10 hover:t-opacity-80; }
-</style>
