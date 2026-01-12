@@ -9,13 +9,14 @@ export default defineEventHandler(async (event) => {
 
   const yMeals = await prisma.meal.findMany({ where: { userId, date: dateY } });
   for (const m of yMeals) {
-    const time = new Date(); // текущее время или сдвигай по порядку
+    const time = new Date();
     await prisma.meal.create({
       data: {
         userId,
         date: dateToday,
         time,
-        itemsJson: m.itemsJson,
+        mealType: m.mealType,
+        itemsJson: m.itemsJson as any,
         kcal: m.kcal, protein: m.protein, carbs: m.carbs, fat: m.fat,
       }
     });

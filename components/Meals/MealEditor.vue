@@ -13,12 +13,12 @@ const emit = defineEmits<{
   (e: 'change-type', val: string): void
 }>()
 
-// локальное состояние
+// Local state
 const localItems = ref<any[]>([])
 const localMealType = ref<'BREAKFAST'|'LUNCH'|'DINNER'|'SNACK'>('BREAKFAST')
 const localTime = ref('08:00')
 
-// добавление продукта
+// Adding product
 const searchQuery = ref('')
 const searchResults = ref<any[]>([])
 const selectedProduct = ref<any | null>(null)
@@ -30,7 +30,7 @@ const validationMeta = {
   time: 'required',
 }
 
-// инициализация из props.meal
+// Initialize from props.meal
 watch(
   () => props.meal,
   (m) => {
@@ -61,10 +61,10 @@ const totals = computed(() =>
 )
 
 const mealTypeOptions = [
-  { label: 'Завтрак', value: 'BREAKFAST' },
-  { label: 'Обед', value: 'LUNCH' },
-  { label: 'Ужин', value: 'DINNER' },
-  { label: 'Перекус', value: 'SNACK' },
+  { title: 'Breakfast', id: 'BREAKFAST' },
+  { title: 'Lunch', id: 'LUNCH' },
+  { title: 'Dinner', id: 'DINNER' },
+  { title: 'Snack', id: 'SNACK' },
 ]
 
 // -------------------- search & add product --------------------
@@ -85,7 +85,7 @@ function selectProduct(p: any) {
   selectedProduct.value = p
 }
 
-// диапазоны времени — чтобы пользователь не ставил «завтрак» в 23:00
+// Time ranges — prevent user from setting "breakfast" at 23:00
 function isTimeAllowed(hh: number, mm: number, type: string) {
   const mins = hh * 60 + mm
   if (type === 'BREAKFAST') return mins >= 5 * 60 && mins <= 11 * 60    // 05:00–11:00
@@ -104,21 +104,21 @@ function parseTimeStr(t: string) {
 async function addToItems() {
   addError.value = null
   if (!selectedProduct.value) {
-    addError.value = 'Выбери продукт из списка'
+    addError.value = 'Select a product from the list'
     return
   }
   if (!grams.value || grams.value <= 0) {
-    addError.value = 'Укажи граммовку'
+    addError.value = 'Enter the grams'
     return
   }
 
   const parsed = parseTimeStr(localTime.value)
   if (!parsed) {
-    addError.value = 'Некорректное время'
+    addError.value = 'Invalid time'
     return
   }
   if (!isTimeAllowed(parsed.hh, parsed.mm, localMealType.value)) {
-    addError.value = 'Время не подходит для этого типа приёма'
+    addError.value = 'Time does not fit this meal type'
     return
   }
 
@@ -136,7 +136,7 @@ async function addToItems() {
     fat: Math.round((p.fat || 0) * ratio),
   })
 
-  // сбрасываем только продукт и запрос, граммовку можно оставить
+  // Reset only product and query, keep grams
   selectedProduct.value = null
   searchQuery.value = ''
   searchResults.value = []
@@ -149,7 +149,7 @@ function removeItem(index: number) {
 }
 
 async function onSubmitMeta(values: { mealType: string; time: string }) {
-  // значения из VForm прилетают сюда, обновим локальные
+  // Values from VForm arrive here, update local state
   localMealType.value = values.mealType as any
   localTime.value = values.time
 
@@ -181,7 +181,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
 
 <template>
   <div v-if="meal" class="t-space-y-4">
-    <!-- Форма мета-данных приёма: тип и время -->
+    <!-- Meal meta form: type and time -->
     <VForm
       :validation-schema="validationMeta"
       class="t-flex t-flex-col t-gap-4"
@@ -191,7 +191,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
         <div class="t-flex-1">
           <VFormSelect
             name="mealType"
-            label="Тип приёма"
+            label="Meal type"
             :options="mealTypeOptions"
             :model-value="localMealType"
             @update:modelValue="val => (localMealType = val as any)"
@@ -200,7 +200,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
         <div class="t-w-full md:t-w-48">
           <VFormInput
             name="time"
-            label="Время"
+            label="Time"
             type="time"
             :model-value="localTime"
             @update:modelValue="val => (localTime = val as string)"
@@ -208,20 +208,18 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
         </div>
       </div>
 
-      <!-- Блок добавления продукта -->
       <div class="t-panel">
         <div class="t-text-sm t-opacity-70 t-mb-3">
-          Добавить продукт в этот приём
+          Add product to this meal
         </div>
 
         <div class="t-flex t-flex-col lg:t-flex-row t-gap-3 t-items-start">
-          <!-- Поиск продукта -->
           <div class="t-flex-1">
-            <label class="t-label">Поиск продукта</label>
+            <label class="t-label">Search product</label>
             <input
               v-model="searchQuery"
               class="t-input t-w-full"
-              placeholder="Например, куриная грудка"
+              placeholder="E.g., chicken breast"
               @input="searchProducts"
             >
             <ul
@@ -238,7 +236,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
                 <div>
                   <div class="t-text-xs t-font-semibold">{{ p.name }}</div>
                   <div class="t-text-[10px] t-opacity-70">
-                    {{ Math.round(p.kcal) }} ккал / {{ p.servingQty || 100 }} г
+                    {{ Math.round(p.kcal) }} kcal / {{ p.servingQty || 100 }} g
                   </div>
                 </div>
               </li>
@@ -247,7 +245,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
           <div class="t-w-full lg:t-w-32">
             <VFormInput
               name="gramsLocal"
-              label="Грамм"
+              label="Grams"
               type="number"
               :model-value="grams"
               @update:modelValue="val => (grams = val ? Number(val) : null)"
@@ -259,7 +257,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
               class="t-btn-main"
               @click="addToItems"
             >
-              + Добавить
+              + Add
             </button>
           </div>
         </div>
@@ -270,15 +268,15 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
       <div class="t-panel">
         <div class="t-flex t-justify-between t-items-center t-mb-3">
           <div class="t-text-sm t-opacity-70">
-            Продукты ({{ localItems.length }})
+            Products ({{ localItems.length }})
           </div>
           <div class="t-text-xs">
-            Итого: {{ totals.kcal }} ккал · Б {{ totals.p }} · У {{ totals.c }} · Ж {{ totals.f }}
+            Total: {{ totals.kcal }} kcal · P {{ totals.p }} · C {{ totals.c }} · F {{ totals.f }}
           </div>
         </div>
 
         <div v-if="!localItems.length" class="t-text-sm t-opacity-60">
-          Пока нет продуктов. Добавь хотя бы один.
+          No products yet. Add at least one.
         </div>
 
         <ul class="t-space-y-2">
@@ -292,7 +290,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
                 {{ it.name }}
               </div>
               <div class="t-text-[10px] t-opacity-70">
-                {{ it.grams || 0 }} г · {{ it.kcal }} ккал · Б {{ it.protein }} · У {{ it.carbs }} · Ж {{ it.fat }}
+                {{ it.grams || 0 }} g · {{ it.kcal }} kcal · P {{ it.protein }} · C {{ it.carbs }} · F {{ it.fat }}
               </div>
             </div>
             <button
@@ -300,7 +298,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
               class="t-btn-danger"
               @click="removeItem(idx)"
             >
-              Удалить
+              Remove
             </button>
           </li>
         </ul>
@@ -310,7 +308,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
           type="submit"
           class="t-w-full md:t-w-auto"
         >
-          Сохранить приём
+          Save meal
         </VBtn>
       </div>
     </VForm>
@@ -319,7 +317,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
 
 <style scoped>
 .t-panel {
-  @apply t-bg-[var(--panel,#171a1f)] t-rounded-3xl t-p-4;
+  @apply t-bg-cards t-rounded-3xl t-p-4;
 }
 
 .t-label {

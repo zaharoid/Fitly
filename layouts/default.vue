@@ -37,8 +37,7 @@ const { mainLinks, actions } = useSidebarData();
 // });
 </script>
 <template>
-  <ClientOnly>
-    <div class="v-layout-default">
+  <div class="v-layout-default">
       <DefaultHeader />
       <main class="v-layout-default__main">
         <!-- <Transition name="u-opac"> -->
@@ -115,7 +114,6 @@ const { mainLinks, actions } = useSidebarData();
         </div> -->
       </main>
     </div>
-  </ClientOnly>
 </template>
 
 <style lang="scss" scoped>

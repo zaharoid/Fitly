@@ -1,7 +1,7 @@
 // scripts/seed-products.ts
 // Run:
 //   FDC_API_KEY=xxx ts-node scripts/seed-products.ts
-//   SEED_NO_IMAGES=1 ts-node scripts/seed-products.ts  (чтобы отключить OFF/Unsplash)
+//   SEED_NO_IMAGES=1 ts-node scripts/seed-products.ts  (to disable OFF/Unsplash)
 
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
@@ -162,9 +162,8 @@ async function main() {
   console.log(`FDC IDs: ${allIds.length}`)
 
   let created = 0, updated = 0, skipped = 0, processed = 0
-  const seenNameKey = new Set<string>() // дедуп внутри запуска
+  const seenNameKey = new Set<string>() // dedup within this run
 
-  // пул параллелизма
   async function worker(chunk: number[]) {
     for (const id of chunk) {
       try {
@@ -207,9 +206,9 @@ async function main() {
     }
   }
 
-  // разобьём по CONCURRENCY
+  // Split by CONCURRENCY
   const chunks: number[][] = Array.from({ length: CONCURRENCY }, () => [])
-  allIds.forEach((id, i) => chunks[i % CONCURRENCY].push(id))
+  allIds.forEach((id, i) => chunks[i % CONCURRENCY]!.push(id))
   await Promise.all(chunks.map(worker))
 
   console.log(`Done. created=${created}, updated=${updated}, skipped=${skipped}, total=${processed}`)

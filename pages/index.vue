@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 onMounted(() => {
-  useHeadTitle('Главная');
+  useHeadTitle('Home');
 });
 
 </script>
