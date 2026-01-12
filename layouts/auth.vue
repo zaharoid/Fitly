@@ -32,30 +32,28 @@ const route = useRoute();
 // });
 </script>
 <template>
-  <ClientOnly>
-    <div class="v-layout-login">
-      <div class="v-layout-login__content-side v-layout-login__content-side--main">
-        <!-- <LogoLink
-          class="t-self-center t-mb-6 v-layout-login__logo"
-          :to="logoLinkTo"
-        /> -->
-        <div class="t-grow">
-          <slot />
-        </div>
-        <!-- <SignNav
-          :nav-items="NAV_ITEMS"
-          screen-mode="mobile"
-          class="lg:t-hidden t-mt-6"
-        /> -->
-      <!-- </div> -->
-      <!-- <div class="v-layout-login__content-side v-layout-login__content-side--minor">
-        <SignSidePart
-          :nav-items="NAV_ITEMS"
-        />
-      </div> -->
-    </div>
-    </div>
-  </ClientOnly>
+  <div class="v-layout-login">
+    <div class="v-layout-login__content-side v-layout-login__content-side--main">
+      <!-- <LogoLink
+        class="t-self-center t-mb-6 v-layout-login__logo"
+        :to="logoLinkTo"
+      /> -->
+      <div class="t-grow">
+        <slot />
+      </div>
+      <!-- <SignNav
+        :nav-items="NAV_ITEMS"
+        screen-mode="mobile"
+        class="lg:t-hidden t-mt-6"
+      /> -->
+    <!-- </div> -->
+    <!-- <div class="v-layout-login__content-side v-layout-login__content-side--minor">
+      <SignSidePart
+        :nav-items="NAV_ITEMS"
+      />
+    </div> -->
+  </div>
+  </div>
 </template>
 
 <style lang="scss">

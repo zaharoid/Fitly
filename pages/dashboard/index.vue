@@ -1,15 +1,15 @@
 <script setup lang="ts">
 const today = new Date().toISOString().slice(0, 10)
-const { data: stats } = await useFetch('/api/stats/today', { query: { date: today } })
-const { data: activity } = await useFetch('/api/stats/active-days')
 
-const goal = ref<any>(null)
-try {
-  const g = await $fetch('/api/goals/get')
-  goal.value = g.goal || null
-} catch {}
+const [{ data: stats }, { data: activity }, { data: goalData }] = await Promise.all([
+  useFetch<any>('/api/stats/today', { query: { date: today } }),
+  useFetch('/api/stats/active-days'),
+  useFetch('/api/goals/get', { default: () => ({ goal: null }) }),
+])
 
-const kcalGoal = computed(() => goal.value?.dailyKcalTarget ?? goal.value?.kcalTarget ?? null)
+const goal = computed(() => goalData.value?.goal || null)
+
+const kcalGoal = computed(() => (goal.value as any)?.dailyKcalTarget ?? goal.value?.kcalTarget ?? null)
 const proteinGoal = computed(() => goal.value?.proteinTarget ?? null)
 
 const kcalProgressPct = computed(() => {
@@ -49,7 +49,6 @@ const todayTip = computed(() => {
             </VLinkBtn>
           </div>
 
-          <!-- Общие макро-показатели -->
           <div class="t-grid t-grid-cols-2 md:t-grid-cols-4 t-gap-3">
             <a-card class="v-card" :bordered="false">
               <div class="t-text-xs t-opacity-70">Calories</div>
@@ -78,7 +77,6 @@ const todayTip = computed(() => {
             </a-card>
           </div>
 
-          <!-- По типам приёмов -->
           <div class="t-grid t-grid-cols-2 md:t-grid-cols-4 t-gap-3 t-mt-4">
             <a-card class="v-card t-flex t-flex-col t-justify-between" :bordered="false">
               <div>
@@ -129,7 +127,6 @@ const todayTip = computed(() => {
             </a-card>
           </div>
 
-          <!-- Прогресс по калориям и микро-цели -->
           <div class="t-grid t-grid-cols-1 md:t-grid-cols-2 t-gap-4 t-mt-6">
             <a-card class="v-card t-flex t-items-center t-gap-4" :bordered="false">
               <div class="v-progress-circle">
@@ -166,7 +163,6 @@ const todayTip = computed(() => {
         </a-card>
       </section>
 
-      <!-- ПРАВАЯ ЧАСТЬ: активность и цель -->
       <aside class="t-col-span-12 lg:t-col-span-3">
         <a-card class="v-panel t-flex t-flex-col t-gap-4">
           <div>
@@ -190,7 +186,7 @@ const todayTip = computed(() => {
               <p>
                 <span class="t-opacity-70">Daily target:</span>
                 <span class="t-font-semibold">
-                  {{ Math.round(goal.dailyKcalTarget ?? goal.kcalTarget ?? 0) }} kcal
+                  {{ Math.round((goal as any).dailyKcalTarget ?? goal.kcalTarget ?? 0) }} kcal
                 </span>
               </p>
               <p>

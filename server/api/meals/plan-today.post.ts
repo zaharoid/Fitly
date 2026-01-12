@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import { getServerSession } from '#auth'
 const prisma = new PrismaClient()
 
-// распределение макросов по приёмам
 const SPLIT: Record<string, number> = { breakfast: 0.30, snack: 0.10, lunch: 0.35, dinner: 0.25 }
 
 function startOfUTCDay(d = new Date()) {
@@ -25,7 +24,8 @@ export default defineEventHandler(async (event) => {
 
   const date = startOfUTCDay(new Date())
 
-  await prisma.meal.deleteMany({ where: { userId: user.id, date, itemsJson: { path: ['_plan'], equals: true } } }).catch(()=>{})
+  // Delete existing plan meals for today
+  await prisma.meal.deleteMany({ where: { userId: user.id, date, isPlan: true } }).catch(()=>{})
 
   const base = {
     kcal: goal.kcalTarget,
@@ -34,7 +34,6 @@ export default defineEventHandler(async (event) => {
     f: goal.fatTarget
   }
 
-  // Время приёмов (UTC — подкорректируешь при желании)
   const times: Record<string, [number, number]> = {
     breakfast: [8, 30],
     snack:     [11, 0],
@@ -44,8 +43,18 @@ export default defineEventHandler(async (event) => {
 
   const created = []
   for (const [name, frac] of Object.entries(SPLIT)) {
-    const [hh, mm] = times[name]
+    const timeArr = times[name]
+    if (!timeArr) continue
+    const [hh, mm] = timeArr
     const time = new Date(date); time.setUTCHours(hh, mm, 0, 0)
+
+    const mealTypeMap: Record<string, 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK'> = {
+      breakfast: 'BREAKFAST',
+      lunch: 'LUNCH',
+      dinner: 'DINNER',
+      snack: 'SNACK',
+    }
+    const mealType = mealTypeMap[name] || 'SNACK'
 
     const part = {
       kcal: Math.round(base.kcal * frac),
@@ -56,7 +65,7 @@ export default defineEventHandler(async (event) => {
 
     const itemsJson = [
       {
-        _plan: true, // флаг, по которому мы легко отличим «план» от реальной записи
+        _plan: true, // Flag to easily distinguish "plan" from actual meal entry
         name: `Planned ${name}`,
         grams: null,
         kcal: part.kcal,
@@ -71,6 +80,8 @@ export default defineEventHandler(async (event) => {
         userId: user.id,
         date,
         time,
+        mealType,
+        isPlan: true,
         itemsJson,
         kcal: part.kcal,
         protein: part.protein,

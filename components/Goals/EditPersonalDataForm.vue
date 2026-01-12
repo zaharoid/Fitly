@@ -20,7 +20,7 @@ const fields: Field[] = [
       { title: 'Female', id: 'f' },
     ]
   }, {
-    label: 'Height (см)',
+    label: 'Height (cm)',
     name: 'heightCm',
     type: 'number',
     fieldMode: 'input'

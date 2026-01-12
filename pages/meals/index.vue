@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const date = ref(new Date().toISOString().slice(0, 10))
-const { data, refresh } = await useFetch('/api/meals/day', { query: { date: date.value } })
+const { data, refresh } = await useFetch(() => `/api/meals/day?date=${date.value}`)
 
-watch(date, async (d) => {
-  await refresh({ query: { date: d } })
+watch(date, async () => {
+  await refresh()
 })
 
 const addModalOpen = ref(false)
@@ -15,16 +15,16 @@ function openAdd(type: 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'SNACK') {
 }
 
 async function handleCreated() {
-  await refresh({ query: { date: date.value } })
+  await refresh()
 }
 
 async function openMeal(id: string) {
-  await navigateTo(`/app/meals/${id}`)
+  await navigateTo(`/meals/${id}`)
 }
 
 async function deleteMeal(id: string) {
   await $fetch('/api/meals/delete', { method: 'DELETE', query: { mealId: id } })
-  await refresh({ query: { date: date.value } })
+  await refresh()
 }
 
 function shiftDay(delta: number) {
@@ -49,124 +49,168 @@ const dayTotals = computed(() => {
 })
 
 const { data: goalData } = await useFetch('/api/goals/get')
-const kcalGoal = computed(() => goalData.value?.goal?.dailyKcalTarget ?? goalData.value?.goal?.kcalTarget ?? null)
+const kcalGoal = computed(() => (goalData.value?.goal as any)?.dailyKcalTarget ?? goalData.value?.goal?.kcalTarget ?? null)
 const proteinGoal = computed(() => goalData.value?.goal?.proteinTarget ?? null)
 </script>
 
 <template>
-  <div class="t-min-h-screen t-bg-[var(--bg,#0f1114)">
-    <div class="t-max-w-5xl t-mx-auto t-space-y-5">
-      <a-card
-        class="v-card t-bg-[var(--panel,#171a1f)] t-rounded-3xl t-border-0 t-shadow-none t-flex t-flex-col t-gap-4 md:t-flex-row md:t-items-center md:t-justify-between"
-        :bordered="false"
-      >
-        <div>
-          <h1 class="t-text-xl t-font-semibold">Meals</h1>
-          <p class="t-text-xs t-opacity-70 t-mt-1">
-            Log what you eat throughout the day. The more detailed you are, the more accurate your stats and progress.
-          </p>
-          <div class="t-flex t-items-center t-gap-2 t-mt-3 t-mb-3">
-            <button class="v-btn" @click="shiftDay(-1)">◀</button>
-            <input v-model="date" type="date" class="v-input" />
-            <button class="v-btn" @click="shiftDay(1)">▶</button>
-          </div>
+  <div class="v-meals-page t-min-h-screen">
+    <header class="t-mb-6">
+      <h1 class="t-text-2xl t-font-semibold">
+        Meals
+      </h1>
+      <p class="t-text-sm t-opacity-70 t-mt-1 t-max-w-2xl">
+        Log what you eat throughout the day. The more detailed you are, the more accurate your stats and progress.
+      </p>
+    </header>
+
+    <div class="v-meals-wrapper">
+      <!-- Date navigation & Add buttons -->
+      <a-card class="v-card" :bordered="false">
+        <h2 class="t-text-xl t-font-semibold t-mb-3">Select Date</h2>
+        <div class="t-flex t-items-center t-gap-2 t-mb-4">
+          <VBtn variant="secondary" @click="shiftDay(-1)">◀</VBtn>
+          <input v-model="date" type="date" class="v-input" />
+          <VBtn variant="secondary" @click="shiftDay(1)">▶</VBtn>
         </div>
-        <div class="t-flex t-flex-wrap t-gap-2 t-mt-1 md:t-mt-0">
-          <button class="v-btn" @click="openAdd('BREAKFAST')">+ Breakfast</button>
-          <button class="v-btn" @click="openAdd('LUNCH')">+ Lunch</button>
-          <button class="v-btn" @click="openAdd('DINNER')">+ Dinner</button>
-          <button class="v-btn" @click="openAdd('SNACK')">+ Snack</button>
+        <p class="t-text-xs t-opacity-70 t-mb-4">
+          Add a meal to track your nutrition for this day.
+        </p>
+        <div class="t-flex t-flex-col t-gap-2">
+          <VBtn class="t-w-full" @click="openAdd('BREAKFAST')">+ Breakfast</VBtn>
+          <VBtn class="t-w-full" @click="openAdd('LUNCH')">+ Lunch</VBtn>
+          <VBtn class="t-w-full" @click="openAdd('DINNER')">+ Dinner</VBtn>
+          <VBtn class="t-w-full" @click="openAdd('SNACK')">+ Snack</VBtn>
         </div>
       </a-card>
-      <a-card
-        class="v-card t-bg-[var(--panel,#171a1f)] t-rounded-3xl t-border-0 t-shadow-none"
-        :bordered="false"
-      >
-        <div class="t-grid t-grid-cols-1 md:t-grid-cols-3 t-gap-4">
-          <div class="t-space-y-1">
-            <div class="t-text-xs t-opacity-70">Today’s totals</div>
+
+      <!-- Today's totals & Goal comparison -->
+      <a-card class="v-card v-card--wide" :bordered="false">
+        <h2 class="t-text-xl t-font-semibold t-mb-3">Daily Summary</h2>
+        <div class="t-grid t-grid-cols-1 md:t-grid-cols-2 t-gap-6">
+          <section class="v-block">
+            <div class="t-text-xs t-opacity-70 t-mb-1">Today's totals</div>
             <div class="t-text-2xl t-font-semibold">
               {{ Math.round(dayTotals.kcal) }} kcal
             </div>
-            <div class="t-text-xs t-opacity-80">
+            <div class="t-text-xs t-opacity-80 t-mt-1">
               Protein: {{ Math.round(dayTotals.p) }} g · Carbs: {{ Math.round(dayTotals.c) }} g · Fat: {{ Math.round(dayTotals.f) }} g
             </div>
-            <div class="t-text-[11px] t-opacity-70 t-mt-1">
+            <div class="t-text-[11px] t-opacity-70 t-mt-2">
               Logged meals: {{ dayTotals.count }}
             </div>
-          </div>
+          </section>
 
-          <div class="t-space-y-1 t-text-xs">
-            <div class="t-text-xs t-opacity-70">Against your goal</div>
-            <p v-if="kcalGoal">
-              Calories: {{ Math.round(dayTotals.kcal) }} / {{ Math.round(kcalGoal) }} kcal
-            </p>
-            <p v-if="proteinGoal">
-              Protein: {{ Math.round(dayTotals.p) }} / {{ Math.round(proteinGoal) }} g
-            </p>
-            <p v-if="!kcalGoal && !proteinGoal" class="t-opacity-70">
+          <section class="v-block">
+            <div class="t-text-xs t-opacity-70 t-mb-1">Against your goal</div>
+            <template v-if="kcalGoal || proteinGoal">
+              <p v-if="kcalGoal" class="t-text-sm">
+                Calories: {{ Math.round(dayTotals.kcal) }} / {{ Math.round(kcalGoal) }} kcal
+              </p>
+              <p v-if="proteinGoal" class="t-text-sm">
+                Protein: {{ Math.round(dayTotals.p) }} / {{ Math.round(proteinGoal) }} g
+              </p>
+            </template>
+            <p v-else class="t-text-sm t-opacity-70">
               Set your goal on the Goals page to see how your day matches your plan.
             </p>
-            <p class="t-opacity-70 t-mt-1">
-              Try to keep your day within ±10% of your calorie and protein targets. It’s okay if some days are not perfect.
+            <p class="t-text-xs t-opacity-70 t-mt-2">
+              Try to keep your day within ±10% of your calorie and protein targets.
             </p>
-          </div>
-
-          <div class="t-space-y-1 t-text-xs">
-            <div class="t-text-xs t-opacity-70">Tips for better tracking</div>
-            <ul class="t-list-disc t-pl-4 t-space-y-1">
-              <li>Log meals right after eating — it takes <b>less than a minute</b> and keeps your data fresh.</li>
-              <li>Use snacks to close your protein or fruit/veggie gap.</li>
-              <li>Be honest with portions. Your goal is awareness, not “perfect” numbers.</li>
-            </ul>
-          </div>
+          </section>
         </div>
       </a-card>
-      <MealsList
-        :meals="data?.meals || []"
-        @open="openMeal"
-        @delete="deleteMeal"
-      />
-      <MealsAddDialog
-        v-model="addModalOpen"
-        :date="date"
-        :meal-type="addMealType"
-        @created="handleCreated"
-      />
+
+      <!-- Tips -->
+      <a-card class="v-card v-card--full" :bordered="false">
+        <h2 class="t-text-xl t-font-semibold t-mb-2">Tips for better tracking</h2>
+        <ul class="t-list-disc t-pl-4 t-space-y-1 t-text-sm">
+          <li>Log meals right after eating — it takes <b>less than a minute</b> and keeps your data fresh.</li>
+          <li>Use snacks to close your protein or fruit/veggie gap.</li>
+          <li>Be honest with portions. Your goal is awareness, not "perfect" numbers.</li>
+        </ul>
+      </a-card>
+
+      <!-- Meals list -->
+      <a-card class="v-card v-card--full" :bordered="false">
+        <h2 class="t-text-xl t-font-semibold t-mb-3">Meals</h2>
+        <MealsList
+          :meals="data?.meals || []"
+          @open="openMeal"
+          @delete="deleteMeal"
+        />
+      </a-card>
     </div>
+
+    <MealsAddDialog
+      v-model="addModalOpen"
+      :date="date"
+      :meal-type="addMealType"
+      @created="handleCreated"
+    />
   </div>
 </template>
 
-<style scoped>
-.v-card {
-  background-color: #fff; /* Светлый фон для карточек */
-  box-shadow: 0 6px 14px -10px #0000001a;
-  color: #111827; /* Темный текст */
+<style scoped lang="scss">
+.v-meals-page {
+  background-color: #f9fafb;
+  color: #111827;
 }
 
-.v-btn {
-  @apply t-text-xs t-rounded-xl t-px-3 t-py-1;
-  background-color: #0000000d; /* Светлый фон для кнопок */
-  color: #111827; /* Темный текст кнопок */
+.v-meals-wrapper {
+  align-items: start;
+  display: grid;
+  gap: theme('spacing.6');
+  grid-auto-rows: min-content;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 
-  &:hover {
-    opacity: .8;
+  @screen xlMax {
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.v-card {
+  background-color: #fff;
+  border-radius: theme('borderRadius.2xl');
+  box-shadow: 0 4px 10px #0000001a;
+  box-sizing: border-box;
+  color: #111827;
+  padding: theme('spacing.6');
+  width: 100%;
+}
+
+.v-card--wide {
+  max-width: none;
+}
+
+.v-card--full {
+  grid-column: 1 / -1;
+}
+
+.v-block {
+  background-color: #f9fafb;
+
+  @apply t-rounded-2xl t-p-4;
 }
 
 .v-input {
   @apply t-bg-transparent t-border t-rounded-xl t-px-3 t-py-2 t-outline-none;
-  background-color: #fff; /* Светлый фон для инпутов */
-  border-color: #0000001a; /* Светлая граница */
-  color: #111827; /* Темный текст */
+  background-color: #fff;
+  border-color: #e5e7eb;
+  color: #111827;
 
   &:focus {
-    border-color: #2563eb; /* Акцентный синий при фокусе */
+    border-color: #2563eb;
   }
 }
 
-body {
-  background-color: #f9fafb; /* Светлый фон страницы */
-  color: #111827; /* Темный текст */
+h1,
+h2,
+h3 {
+  color: #2563eb;
+}
+
+p {
+  color: #4b5563;
 }
 </style>

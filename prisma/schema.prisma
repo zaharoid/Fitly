@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -108,11 +108,11 @@ model Product {
 model Meal {
   id        String   @id @default(cuid())
   userId    String
-  date      DateTime              // день (UTC, без времени)
-  time      DateTime              // точное время приёма
-  mealType  MealType              // BREAKFAST/LUNCH/DINNER/SNACK
+  date      DateTime
+  time      DateTime
+  mealType  MealType
 
-  itemsJson Json                  // [{ productId?, name, grams, kcal, protein, carbs, fat }, ...]
+  itemsJson Json
   kcal      Float    @default(0)
   protein   Float    @default(0)
   carbs     Float    @default(0)
@@ -149,10 +149,10 @@ model Recipe {
 model Metric {
   id        String   @id @default(cuid())
   userId    String
-  date      DateTime  // дата (UTC 00:00)
+  date      DateTime  // date (UTC 00:00)
   weightKg  Float?
   steps     Int?
-  hrRest    Int?      // опционально
+  hrRest    Int?      // optional
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

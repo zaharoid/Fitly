@@ -8,7 +8,7 @@ const props = defineProps({
 const emit = defineEmits(['open', 'delete'])
 
 const titles: Record<string,string> = {
-  BREAKFAST: 'Breackfast',
+  BREAKFAST: 'Breakfast',
   LUNCH: 'Lunch',
   DINNER: 'Dinner',
   SNACK: 'Snacks',
@@ -17,7 +17,8 @@ const titles: Record<string,string> = {
 const grouped = computed(() => {
   const g: Record<string, any[]> = { BREAKFAST:[], LUNCH:[], DINNER:[], SNACK:[] }
   for (const m of props.meals) {
-    if (g[m.mealType]) g[m.mealType].push(m)
+    const arr = g[m.mealType]
+    if (arr) arr.push(m)
   }
   return g
 })
@@ -33,7 +34,7 @@ const grouped = computed(() => {
       <div class="t-flex t-justify-between t-items-center t-mb-3">
         <h3 class="t-text-base t-font-semibold">{{ titles[type] }}</h3>
         <span class="t-text-xs t-opacity-70">
-          {{ (grouped[type] || []).reduce((a,m)=>a+m.kcal,0) }} kkal
+          {{ (grouped[type] || []).reduce((a,m)=>a+m.kcal,0) }} kcal
         </span>
       </div>
 
@@ -52,7 +53,7 @@ const grouped = computed(() => {
               {{ new Date(m.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
             </div>
             <div class="t-text-xs t-opacity-70">
-              {{ m.itemsJson?.length || 0 }} products · {{ Math.round(m.kcal) }} kkal.
+              {{ m.itemsJson?.length || 0 }} products · {{ Math.round(m.kcal) }} kcal
             </div>
           </div>
           <div class="t-flex t-gap-2">

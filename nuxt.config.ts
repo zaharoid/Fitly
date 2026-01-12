@@ -3,6 +3,7 @@ import stylelint from 'vite-plugin-stylelint';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2026-01-10',
   alias: {
     '~t': fileURLToPath(new URL('./types', import.meta.url)),
     '~x': fileURLToPath(new URL('./composables', import.meta.url)),
@@ -65,14 +66,11 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@sidebase/nuxt-auth',
   ],
+  antd: {
+    extractStyle: true,
+  },
   devtools: {
     enabled: true,
-  },
-  eslint: {
-    cache: false,
-    lintOnStart: false,
-    emitWarning: true,
-    emitError: true,
   },
   stylelint: {
     cache: false,
@@ -84,19 +82,6 @@ export default defineNuxtConfig({
   tailwindcss: {
     cssPath: '~/assets/scss/main.scss',
   },
-  i18n: {
-    locales: [
-      {
-        code: 'en',
-        name: 'English',
-        file: 'en-US.ts',
-      },
-    ],
-    strategy: 'no_prefix',
-    // lazy: true, // doesn't work correctly with no_prefix strategy
-    langDir: 'lang',
-    defaultLocale: 'en',
-  },
   googleFonts: {
     families: {
       Inter: {
@@ -104,6 +89,9 @@ export default defineNuxtConfig({
         ital: [400, 500, 600, 700],
       },
     },
+    display: 'swap',
+    preload: true,
+    prefetch: true,
   },
   veeValidate: {
     autoImports: true,
@@ -131,10 +119,17 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@use "sass:math"; @import "./assets/scss/settings-tools";',
+          additionalData: '@use "sass:math"; @use "./assets/scss/settings-tools" as *;',
+          silenceDeprecations: ['import', 'global-builtin'],
           quietDeps: true,
         },
       },
+    },
+  },
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
     },
   },
 });

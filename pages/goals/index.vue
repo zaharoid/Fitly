@@ -37,10 +37,80 @@ const validationData = {
   weightKg: Yup.string().required().label('Weight'),
 }
 
-const validationGoal = {
-  weightTarget: Yup.number().required().max(200).label('Desired weight'),
+// BMI-based weight validation
+const minHealthyWeight = computed(() => {
+  if (!profile.value?.heightCm) return 40
+  const heightM = profile.value.heightCm / 100
+  return Math.round(16 * heightM * heightM) // BMI ~16 (severely underweight threshold)
+})
+
+const maxHealthyWeight = computed(() => {
+  if (!profile.value?.heightCm) return 200
+  const heightM = profile.value.heightCm / 100
+  return Math.round(40 * heightM * heightM) // BMI ~40 (class III obesity threshold)
+})
+
+const healthyWeightRange = computed(() => {
+  if (!profile.value?.heightCm) return { min: 0, max: 0 }
+  const heightM = profile.value.heightCm / 100
+  return {
+    min: Math.round(18.5 * heightM * heightM),
+    max: Math.round(25 * heightM * heightM),
+  }
+})
+
+const validationGoal = computed(() => ({
+  weightTarget: Yup.number()
+    .required()
+    .min(minHealthyWeight.value, `Weight cannot be below ${minHealthyWeight.value} kg for your height`)
+    .max(maxHealthyWeight.value, `Weight cannot exceed ${maxHealthyWeight.value} kg for your height`)
+    .label('Desired weight'),
   activityLevel: Yup.string().required().label('Activity'),
   deadline: Yup.date().required().label('Deadline'),
+}))
+
+// Weight warnings (not blocking, just informational)
+const weightWarning = ref<string | null>(null)
+const goalFormValues = ref<any>({})
+
+function checkWeightWarnings(weightTarget: number) {
+  weightWarning.value = null
+  
+  if (!profile.value?.weightKg || !profile.value?.heightCm || !profile.value?.age) return
+  
+  const currentWeight = profile.value.weightKg
+  const heightM = profile.value.heightCm / 100
+  const age = profile.value.age
+  const targetBmi = weightTarget / (heightM * heightM)
+  const weightDiff = Math.abs(currentWeight - weightTarget)
+  const weightChangePercent = (weightDiff / currentWeight) * 100
+  
+  const warnings: string[] = []
+  
+  // BMI warnings
+  if (targetBmi < 18.5) {
+    warnings.push(`Target BMI (${targetBmi.toFixed(1)}) is underweight. Healthy range: 18.5–25.`)
+  } else if (targetBmi > 30) {
+    warnings.push(`Target BMI (${targetBmi.toFixed(1)}) is in obese range. Consider a lower target.`)
+  } else if (targetBmi > 25) {
+    warnings.push(`Target BMI (${targetBmi.toFixed(1)}) is overweight. Healthy range: 18.5–25.`)
+  }
+  
+  // Aggressive weight loss warning
+  if (weightChangePercent > 20) {
+    warnings.push(`Changing weight by ${weightChangePercent.toFixed(0)}% is aggressive. Consider smaller steps.`)
+  }
+  
+  // Age-specific warnings
+  if (age > 65 && targetBmi < 22) {
+    warnings.push(`For age 65+, BMI below 22 may increase health risks.`)
+  }
+  
+  if (age < 18 && (targetBmi < 18 || targetBmi > 27)) {
+    warnings.push(`For teens, consult a doctor before setting weight goals.`)
+  }
+  
+  weightWarning.value = warnings.length > 0 ? warnings.join(' ') : null
 }
 
 async function onSubmitProfile(values: any) {
@@ -62,7 +132,7 @@ async function onSubmitGoal(values: any) {
   }
   try {
     const res = await $fetch('/api/goals/set-smart', { method: 'POST', body })
-    goal.value = res.goal
+    goal.value = mapOriginGoal(res.goal)
     goalMeta.value = res.meta
   } finally {
     savingGoal.value = false
@@ -84,7 +154,7 @@ async function onSubmitGoal(values: any) {
     </header>
 
     <div class="v-goal-wrapper">
-      <!-- ПРОФИЛЬ -->
+      <!-- PROFILE -->
       <a-card class="v-card" :bordered="false">
         <div v-if="!profileReady || isProfileEditing">
           <h2 class="t-text-xl t-font-semibold t-mb-2">Tell about yourself</h2>
@@ -127,17 +197,18 @@ async function onSubmitGoal(values: any) {
         </div>
       </a-card>
 
-      <!-- ЦЕЛЬ -->
+      <!-- GOAL -->
       <a-card class="v-card v-card--wide" :bordered="false">
         <div class="t-h-full">
           <h2 v-if="profileReady" class="t-text-xl t-font-semibold t-mb-2">Your goal</h2>
 
-          <!-- форма цели -->
+          <!-- goal form -->
           <div v-if="(!goal && profileReady) || isGoalEditing">
             <p class="t-text-sm t-opacity-70 t-mb-4">
               Specify your desired weight, activity level and a realistic deadline — we’ll calculate your calorie target and macro split.
             </p>
             <VForm
+              v-slot="{ values }"
               :validation-schema="validationGoal"
               class="t-flex t-flex-col t-gap-4"
               @submit="onSubmitGoal"
@@ -147,7 +218,19 @@ async function onSubmitGoal(values: any) {
                 label="Desired weight (kg)"
                 type="number"
                 :model-value="goal?.weightTarget || profile?.weightKg"
+                @update:model-value="checkWeightWarnings(Number($event))"
               />
+              
+              <!-- Weight warning -->
+              <div v-if="weightWarning" class="v-warning">
+                <span class="t-text-amber-600">⚠️</span>
+                <span>{{ weightWarning }}</span>
+              </div>
+              
+              <!-- Healthy range hint -->
+              <p v-if="healthyWeightRange.min" class="t-text-xs t-text-gray-500 -t-mt-2">
+                Healthy weight for your height: {{ healthyWeightRange.min }}–{{ healthyWeightRange.max }} kg
+              </p>
               <VFormSelect
                 name="activityLevel"
                 label="Activity Level"
@@ -176,7 +259,7 @@ async function onSubmitGoal(values: any) {
             </VForm>
           </div>
 
-          <!-- показ сохранённой цели -->
+          <!-- show saved goal -->
           <div
             v-else-if="goal && profileReady"
             class="t-flex t-flex-col t-gap-4"
@@ -262,8 +345,8 @@ async function onSubmitGoal(values: any) {
 
 <style scoped lang="scss">
 .v-goal-page {
-  background-color: #f9fafb; /* Светлый фон страницы */
-  color: #111827; /* Темный текст */
+  background-color: #f9fafb;
+  color: #111827;
 }
 
 .v-goal-wrapper {
@@ -279,11 +362,11 @@ async function onSubmitGoal(values: any) {
 }
 
 .v-card {
-  background-color: #fff; /* Светлый фон для карточек */
+  background-color: #fff;
   border-radius: theme('borderRadius.2xl');
-  box-shadow: 0 4px 10px #0000001a; /* Легкая тень */
+  box-shadow: 0 4px 10px #0000001a;
   box-sizing: border-box;
-  color: #111827; /* Темный текст */
+  color: #111827;
   padding: theme('spacing.6');
   width: 100%;
 }
@@ -297,7 +380,7 @@ async function onSubmitGoal(values: any) {
 }
 
 .v-block {
-  background-color: #fff9; /* Светлый фон для блоков */
+  background-color: #fff9;
 
   @apply t-rounded-2xl t-p-4;
 }
@@ -305,10 +388,17 @@ async function onSubmitGoal(values: any) {
 h1,
 h2,
 h3 {
-  color: #2563eb; /* Акцентный синий для заголовков */
+  color: #2563eb;
 }
 
 p {
-  color: #4b5563; /* Темно-серый текст */
+  color: #4b5563;
+}
+
+.v-warning {
+  @apply t-rounded-xl t-px-4 t-py-3 t-flex t-items-start t-gap-2 t-text-sm;
+  background-color: #fffbeb;
+  border: 1px solid #f59e0b;
+  color: #92400e;
 }
 </style>
