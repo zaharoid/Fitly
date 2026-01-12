@@ -333,7 +333,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
 }
 
 .t-result-item--active {
-  @apply t-bg-[var(--primary,#7c3aed)]/40;
+  @apply t-bg-[var(--primary,#7c3aed)];
 }
 
 .t-btn-main {
@@ -345,6 +345,6 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
 }
 
 .t-btn-danger {
-  @apply t-text-[10px] t-rounded-xl t-px-3 t-py-1 t-bg-red-500/20 hover:t-bg-red-500/30;
+  @apply t-text-[10px] t-rounded-xl t-px-3 t-py-1 t-bg-criticalHover hover:t-bg-criticalHover;
 }
 </style>
