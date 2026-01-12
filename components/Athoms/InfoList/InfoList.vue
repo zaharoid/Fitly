@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '~/.nuxt/imports';
 import { useOnCopyValue } from '~/compasables/helper/useOnCopy';
 import type { InfoItem } from '~t/InfoList';
 
