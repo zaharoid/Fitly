@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '~/.nuxt/imports';
 import type { InfoItem, DataInfoItem } from '~t/InfoList';
 
 const props = defineProps({
@@ -25,13 +24,6 @@ const mappedItems = computed((): InfoItem[] => {
   });
 });
 
-const { width } = useWindowSize();
-
-const tooltipDirection = computed(() => {
-  if (width.value > 1100) return 'right';
-  return 'left';
-});
-
 </script>
 
 <template>
@@ -49,16 +41,6 @@ const tooltipDirection = computed(() => {
           <p :class="[item.classNames ?? 't-text-text t-text-base t-font-bold']">
             {{ item.description }}
           </p>
-          <i
-            v-if="item?.tooltip?.text && tooltipDirection === 'right'"
-            v-tooltip.right="item.tooltip.text"
-            class="icon-item-circle-info t-text-secondaryText t-ml-1"
-          />
-          <i
-            v-if="item?.tooltip?.text && tooltipDirection === 'left'"
-            v-tooltip.left="item.tooltip.text"
-            class="icon-item-circle-info t-text-secondaryText t-ml-1"
-          />
         </div>
       </li>
     </ul>

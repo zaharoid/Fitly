@@ -2,7 +2,6 @@
 import useVFormCommon from './useVFormCommon';
 import commonProps from './commonProps';
 import commonSelectProps from './commonSelectProps';
-import { useWindowSize } from '~/.nuxt/imports';
 
 const props = defineProps({
   ...commonProps,
@@ -21,10 +20,8 @@ const props = defineProps({
   },
 });
 
-const { width } = useWindowSize();
 
 const optionTooltipDirection = computed(() => {
-  if (width.value > 1300) return 'right';
   return 'top';
 });
 

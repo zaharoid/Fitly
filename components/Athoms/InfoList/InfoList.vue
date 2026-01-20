@@ -13,10 +13,7 @@ const props = defineProps({
   },
 });
 
-const { width } = useWindowSize();
-
 const tooltipDirection = computed(() => {
-  if (width.value > 1100) return 'right';
   return 'left';
 });
 
