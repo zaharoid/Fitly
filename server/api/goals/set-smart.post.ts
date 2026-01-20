@@ -1,4 +1,3 @@
-// server/api/goals/set-smart.post.ts
 import { prisma } from '~/server/utils/prisma'
 import { requireUserId } from '~/server/utils/auth'
 

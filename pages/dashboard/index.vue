@@ -221,7 +221,7 @@ const todayTip = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .v-panel {
   @apply t-bg-cards t-rounded-3xl t-p-5;
   box-shadow: 0 5px 10px -15px #6e8eb840;

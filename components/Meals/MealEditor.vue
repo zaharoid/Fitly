@@ -229,8 +229,8 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
               <li
                 v-for="p in searchResults"
                 :key="p.id"
-                class="t-result-item"
-                :class="selectedProduct?.id === p.id ? 't-result-item--active' : ''"
+                class="v-product-item"
+                :class="selectedProduct?.id === p.id ? 'v-selected-product' : ''"
                 @click="selectProduct(p)"
               >
                 <div>
@@ -252,13 +252,13 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
             />
           </div>
           <div class="t-flex t-items-end">
-            <button
+            <VBtn
               type="button"
-              class="t-btn-main"
+              view-mode="primary"
               @click="addToItems"
             >
               + Add
-            </button>
+            </VBtn>
           </div>
         </div>
         <p v-if="addError" class="t-text-xs t-text-red-400 t-mt-2">
@@ -283,7 +283,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
           <li
             v-for="(it, idx) in localItems"
             :key="idx"
-            class="t-item-row"
+            class="v-product-item"
           >
             <div>
               <div class="t-font-semibold t-text-xs">
@@ -293,13 +293,13 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
                 {{ it.grams || 0 }} g · {{ it.kcal }} kcal · P {{ it.protein }} · C {{ it.carbs }} · F {{ it.fat }}
               </div>
             </div>
-            <button
+            <VBtn
               type="button"
-              class="t-btn-danger"
+              view-mode="critical-secondary"
               @click="removeItem(idx)"
             >
               Remove
-            </button>
+            </VBtn>
           </li>
         </ul>
       </div>
@@ -307,6 +307,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
         <VBtn
           type="submit"
           class="t-w-full md:t-w-auto"
+          @click="$emit('save')"
         >
           Save meal
         </VBtn>
@@ -341,7 +342,7 @@ async function onSubmitMeta(values: { mealType: string; time: string }) {
 }
 
 .t-item-row {
-  @apply t-bg-white/5 t-rounded-2xl t-px-4 t-py-3 t-flex t-justify-between t-items-center;
+  @apply t-bg-white/5 t-rounded-2xl t-px-4 t-py-3 t-flex t-justify-between t-items-center t-border t-border-secondaryStroke;
 }
 
 .t-btn-danger {

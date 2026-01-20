@@ -46,7 +46,7 @@ const grouped = computed(() => {
         <li
           v-for="m in grouped[type]"
           :key="m.id"
-          class="t-rounded-2xl t-p-4 t-flex t-justify-between t-items-center"
+          class="t-rounded-2xl t-border t-border-secondaryStroke t-p-4 t-flex t-justify-between t-items-center"
         >
           <div>
             <div class="t-font-semibold">
@@ -57,8 +57,8 @@ const grouped = computed(() => {
             </div>
           </div>
           <div class="t-flex t-gap-2">
-            <button class="t-btn" @click="$emit('open', m.id)">Open</button>
-            <button class="t-btn t-bg-red-500/20" @click="$emit('delete', m.id)">Delete</button>
+            <VBtn view-mode="secondary" size="small" @click="$emit('open', m.id)">Open</VBtn>
+            <VBtn view-mode="critical-secondary" size="small" @click="$emit('delete', m.id)">Delete</VBtn>
           </div>
         </li>
       </ul>

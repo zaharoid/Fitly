@@ -3,7 +3,7 @@ import stylelint from 'vite-plugin-stylelint';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2026-01-10',
+  compatibilityDate: '2026-01-01',
   alias: {
     '~t': fileURLToPath(new URL('./types', import.meta.url)),
     '~x': fileURLToPath(new URL('./composables', import.meta.url)),

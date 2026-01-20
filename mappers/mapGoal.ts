@@ -20,7 +20,7 @@ export function mapGoalInfo (goal: DtoSingleGoal): InfoItem[] {
     }, {
       id: 'weight',
       title: 'Weight:',
-      description: `${goal.weightTarget}kg`,
+      description: `${goal.weightCurrent}kg`,
     }
   ]
 }

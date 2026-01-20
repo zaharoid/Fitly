@@ -261,7 +261,7 @@ async function submit() {
   </Teleport>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .v-dialog {
   background-color: #fff;
   border-radius: theme('borderRadius.2xl');
