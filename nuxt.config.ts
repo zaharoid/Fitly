@@ -33,16 +33,6 @@ export default defineNuxtConfig({
       secretKey: 'thisisahellbelivemeiveseenit',
     },
   },
-  app: {
-    head: {
-      link: [{
-        rel: 'icon',
-        type: 'image/svg',
-        href: '/favicon.svg',
-      }],
-    },
-  },
-
   experimental: {
     buildCache: true,
     viewTransition: false,
