@@ -1,7 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-import stylelint from 'vite-plugin-stylelint';
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2026-01-01',
   alias: {
@@ -17,7 +15,6 @@ export default defineNuxtConfig({
       appUrl: process.env.NUXT_PUBLIC_APP_URL,
       nodeEnv: process.env.NODE_ENV,
       appVersion: process.env.NUXT_PUBLIC_APP_VERSION,
-      hotjarId: process.env.NUXT_PUBLIC_HOTJAR_ID || '',
     },
     email: {
       host: process.env.EMAIL_SERVER_HOST,
@@ -45,24 +42,24 @@ export default defineNuxtConfig({
       }],
     },
   },
-  $development: {
-    devServer: {
-      // https: {
-      //   key: 'ssl-key.pem',
-      //   cert: 'ssl-cert.pem',
-      // },
+
+  experimental: {
+    buildCache: true,
+    viewTransition: false,
+  },
+  nitro: {
+    devProxy: {},
+    experimental: {
+      tasks: false,
     },
   },
   modules: [
     '@ant-design-vue/nuxt',
-    '@nuxt/devtools',
-    '@nuxtjs/stylelint-module',
     '@vueuse/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
     '@vee-validate/nuxt',
-    'nuxt-module-hotjar',
     '@nuxt/eslint',
     '@sidebase/nuxt-auth',
   ],
@@ -71,10 +68,9 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: true,
-  },
-  stylelint: {
-    cache: false,
-    lintOnStart: false,
+    timeline: {
+      enabled: false,
+    },
   },
   css: [
     '~/assets/scss/main.scss',
@@ -108,14 +104,13 @@ export default defineNuxtConfig({
       './composables/**/*.ts',
     ],
   },
-  // auto import components
   components: [{
     pathPrefix: false,
     path: '~/components',
     extensions: ['vue'],
   }],
   vite: {
-    plugins: [stylelint()],
+    warmupEntry: false,
     css: {
       preprocessorOptions: {
         scss: {
@@ -124,6 +119,14 @@ export default defineNuxtConfig({
           quietDeps: true,
         },
       },
+    },
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        '@vueuse/core',
+        'pinia',
+      ],
     },
   },
   postcss: {
